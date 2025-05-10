@@ -1,0 +1,178 @@
+/* components.css */
+
+/* Styles communs aux formulaires et boutons */
+input,
+select,
+button {
+  font-size: 1rem;
+  padding: 10px;
+  border-radius: 4px;
+  border: 1px solid var(--border-color);
+  font-family: var(--font-family);
+}
+
+/*largeur du champ de saisie */
+input {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+input[type="number"] {
+  text-align: center;
+}
+
+/* Boutons pour incrémenter/décrémenter */
+.number-control {
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  font-size: 1.5rem;
+  background: var(--primary-color);
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.number-control:hover {
+  opacity: 0.9;
+}
+
+/* Conteneur des boutons d'action */
+.action-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 30px;
+}
+
+/* Styles des boutons d'action principaux */
+.action-button {
+  padding: 15px;
+  font-size: 1.1rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  border: none;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+.action-button.primary {
+  background: var(--secondary-color);
+  color: #fff;
+}
+
+.action-button.secondary {
+  background: var(--tertiary-color);
+  color: #fff;
+}
+
+.action-button:hover {
+  opacity: 0.9;
+}
+
+/* Styles pour les items individuels de résultat (Affichage patch) */
+.result-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #fff;
+  padding: 10px;
+  margin-bottom: 5px;
+  border-radius: 4px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.result-item .address-start {
+  color: var(--primary-color);
+  font-weight: bold;
+}
+
+.result-item .address-end {
+  color: var(--text-color);
+}
+
+/* Styles du conteneur de filtrage dans la section résultats */
+.filter-container {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 15px;
+}
+
+/* Champ de filtre par nom */
+#name-filter {
+  flex: 1;
+}
+
+/* Sélecteur d'univers */
+#universe-filter {
+  width: 150px;
+}
+
+/* Apparition bandeau PATCH OK */
+.toast {
+  position: fixed; 
+  top: 50px;
+  left: 20%; 
+  text-align: center;
+  background: rgb(44, 196, 44);
+  color:white;
+  padding: 12px 20px;
+  border-radius: 4px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+  opacity: 0;
+  transition: opacity 0.3s;
+  pointer-events: none;
+}
+.toast.show {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* Suggestions sous l’input de recherche */
+.suggestions {
+  position: absolute;
+  top: 100%;      /* juste en dessous de l’input */
+  left: 0;
+  right: 0;
+  background: #fff;
+  border: 1px solid var(--border-color);
+  max-height: 200px;    /* scroll si trop de suggestions */
+  overflow-y: auto;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  z-index: 100;
+}
+
+/* Masquée tant qu’on n’a pas de suggestions */
+.suggestions.hidden {
+  display: none;
+}
+
+/* Chaque ligne de suggestion */
+.suggestions li {
+  padding: 8px 10px;
+  cursor: pointer;
+}
+
+/* Survol / sélection clavier */
+.suggestions li:hover,
+.suggestions li.active {
+  background: var(--container-bg);
+}
+
+/* Highlight du texte saisi */
+.suggestions strong {
+  background-color: rgba(47, 10, 230, 0.154);
+  font-weight: bold;
+}
+
+/* selection au clavier */
+#projector-suggestions li.active {
+  background-color: #000ecc97;
+  color: white;
+}

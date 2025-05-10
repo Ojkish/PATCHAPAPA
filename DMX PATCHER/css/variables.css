@@ -1,0 +1,19 @@
+/* variables.css */
+
+:root {
+  /* Couleurs principales */
+  --primary-color: #4d53ce;
+  --secondary-color: #dc3545;
+  --tertiary-color: #7c578b;
+
+  /* Couleurs de fond et de texte */
+  --background-color: #f4f4f4;
+  --container-bg: rgb(187, 183, 183);
+  --text-color: #333;
+
+  /* Couleur de bordure */
+  --border-color: #bb4444;
+
+  /* Typographie */
+  --font-family: system-ui, -apple-system, sans-serif;
+}
