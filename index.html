@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  <title>DMX Patcher & Résultats</title>
+  <!-- CSS Variables & Layout -->
+  <link rel="stylesheet" href="css/variables.css">
+  <link rel="stylesheet" href="css/layout.css">
+  <link rel="stylesheet" href="css/components.css">
+</head>
+<body>
+  <!-- Navigation -->
+  <nav>
+    <button id="show-patch">Patch DMX</button>
+    <button id="show-results">Voir Résultats</button>
+  </nav>
+
+  <!-- Section Patch -->
+  <section id="patch-section">
+    <div class="main-container">
+      <h1>PATCHAPAPA</h1>
+      <form id="patchForm" onsubmit="return false;">
+        <div class="form-group" style="position: relative;">
+          <label for="projectorName">Nom du projecteur :</label>
+          <input type="text" id="projectorName" placeholder="Ex: Aura" autocomplete="off">
+          <!-- On injectera ici la liste des suggestions -->
+          <ul id="projector-suggestions" class="suggestions hidden"></ul>
+        </div>
+        <div class="form-group hidden" id="mode-group">
+          <label for="modeSelect">Mode :</label>
+          <div class="mode-select-container">
+            <select id="modeSelect"></select>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="projectorCount">Nombre de projecteurs :</label>
+          <div class="number-input-container">
+            <button class="number-control" data-action="decrement" data-target="projectorCount">-</button>
+            <input type="number" id="projectorCount" value="1" min="1" max="512">
+            <button class="number-control" data-action="increment" data-target="projectorCount">+</button>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="channelCount">Nombre de canaux par projecteur :</label>
+          <div class="number-input-container">
+            <button class="number-control" data-action="decrement" data-target="channelCount">-</button>
+            <input type="number" id="channelCount" value="1" min="1" max="512">
+            <button class="number-control" data-action="increment" data-target="channelCount">+</button>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="universe">Univers de départ :</label>
+          <div class="number-input-container">
+            <button class="number-control" data-action="decrement" data-target="universe">-</button>
+            <input type="number" id="universe" value="1" min="1">
+            <button class="number-control" data-action="increment" data-target="universe">+</button>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="address">Adresse de départ :</label>
+          <div class="number-input-container">
+            <button class="number-control" data-action="decrement" data-target="address">-</button>
+            <input type="number" id="address" value="1" min="1" max="512">
+            <button class="number-control" data-action="increment" data-target="address">+</button>
+          </div>
+        </div>
+        <div class="action-buttons">
+          <button type="button" id="patchButton" class="action-button primary">Patch</button>
+          <button type="button" id="resultsButton" class="action-button secondary">Résultats</button>
+        </div>
+      </form>
+      <div id="output"></div>
+    </div>
+  </section>
+
+  <!-- Section Résultats -->
+  <section id="results-section" class="hidden">
+    <div class="main-container">
+      <h1>Résultats du Patch DMX</h1>
+      <div class="filter-container">
+        <input type="text" id="name-filter" placeholder="Filtrer par nom">
+        <select id="universe-filter">
+          <option value="">Tous les univers</option>
+        </select>
+      </div>
+      <table id="results-table">
+        <thead>
+          <tr>
+            <th data-sort="name">Nom</th>
+            <th data-sort="universe">Univers</th>
+            <th data-sort="startAddress">Adresse Début</th>
+            <th data-sort="endAddress">Adresse Fin</th>
+            <th data-sort="channels">Canaux</th>
+          </tr>
+        </thead>
+        <tbody id="results-body"></tbody>
+      </table>
+      <div class="export-buttons">
+        <button id="export-csv">Exporter CSV</button>
+        <button id="send-email">Envoyer par Email</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Modules JavaScript -->
+  <script type="module" src="./js/data/projectors.js"></script>
+  <script type="module" src="./js/utils.js"></script>
+  <script src="./js/lib/fuse.js"></script>
+  <script type="module" src="./js/patcher.js"></script>
+  <script type="module" src="./js/emailFormatter.js"></script>
+  <script type="module" src="./js/results.js"></script>
+</body>
+</html>
