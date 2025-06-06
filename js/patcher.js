@@ -87,8 +87,16 @@ export class DMXPatcher {
       import('./results.js').then(m => new m.DMXPatchResults());
     });
 
+    this.pName.addEventListener('blur', () => {
+      setTimeout(() => {
+        document.getElementById('projector-suggestions')?.classList.add('hidden');
+      }, 150);
+    });
+    
+
     this.form.addEventListener('submit', e => e.preventDefault());
   }
+  
 
   onProjectorInput() {
     const term = this.pName.value.trim();
@@ -161,12 +169,22 @@ export class DMXPatcher {
       e.preventDefault();
       this.activeSuggestionIndex = (this.activeSuggestionIndex - 1 + items.length) % items.length;
       this.updateActiveSuggestion(items);
-    } else if (e.key === 'Enter' && this.activeSuggestionIndex >= 0) {
+    } else if (e.key === 'Enter') {
       e.preventDefault();
-      items[this.activeSuggestionIndex].click();
-      this.activeSuggestionIndex = -1;
+      if (this.activeSuggestionIndex >= 0) {
+        // Si une suggestion est active, la sélectionner
+        items[this.activeSuggestionIndex].click();
+        this.activeSuggestionIndex = -1;
+      } else {
+        // Sinon, masquer simplement la liste de suggestions
+        list.classList.add('hidden');
+      }
     }
   }
+  
+
+
+
   updateActiveSuggestion(items) {
     items.forEach((item, idx) => {
       if (idx === this.activeSuggestionIndex) {
@@ -235,6 +253,9 @@ export class DMXPatcher {
   }
 
   patchProjectors() {
+    // Forcer la fermeture des suggestions si encore ouvertes
+    document.getElementById('projector-suggestions')?.classList.add('hidden');
+
     const name = (this.pName.value.trim() || 'PROJO').toUpperCase();
     const pc = getValidInt('projectorCount');
     const cc = getValidInt('channelCount');
