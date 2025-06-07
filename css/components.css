@@ -46,6 +46,7 @@ input[type="number"] {
   flex-direction: column;
   gap: 10px;
   margin-top: 30px;
+
 }
 
 /* Styles des boutons d'action principaux */
@@ -63,6 +64,9 @@ input[type="number"] {
 .action-button.primary {
   background: var(--secondary-color);
   color: #fff;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
 }
 
 .action-button.secondary {
@@ -94,6 +98,12 @@ input[type="number"] {
 .result-item .address-end {
   color: var(--text-color);
 }
+
+/* boutons export et mail cote a cote dans boite */
+.buttons-container {
+  display: flex;
+  gap: 1rem; /* espace entre les boutons */
+}  
 
 /* Styles du conteneur de filtrage dans la section résultats */
 .filter-container {
@@ -176,3 +186,33 @@ input[type="number"] {
   background-color: #000ecc97;
   color: white;
 }
+
+/* Table header sticky */
+#results-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+#results-table thead th {
+  position: sticky;
+  top: 0;
+  background: white;
+  z-index: 2;
+  text-align: left;
+  padding: 0.5em;
+  border-bottom: 1px solid #ccc;
+}
+
+/* Zebra striping */
+#results-table tbody tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+/* Highlighting the "Adresse Début" column */
+#results-table td:nth-child(3),
+#results-table th:nth-child(3) {
+  /*background-color: #f4eabf; Light yellow background*/
+  font-weight: bold;
+  color: #4438e9;
+}
+
