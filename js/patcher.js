@@ -70,8 +70,10 @@ export class DMXPatcher {
 
     // Auto-complétion et modes
     // initProjectorDatalist('projector-list');
-    this.pName.addEventListener('input', () => this.onProjectorInput());
-
+    this.pName.addEventListener('input', () => {
+      this.onProjectorInput();
+      this.checkIfValidProjectorName(); // solution de repli
+    });
     this.pName.addEventListener('keydown', e => this.onProjectorKeyDown(e));
 
     // Mettre à jour adresse quand univers change
@@ -101,10 +103,15 @@ export class DMXPatcher {
   onProjectorInput() {
     const term = this.pName.value.trim();
     const list = document.getElementById('projector-suggestions');
+    const modeGroup = document.getElementById('mode-group');
+    const modeSelect = document.getElementById('modeSelect');
+  
     list.innerHTML = '';
   
     if (!term) {
       list.classList.add('hidden');
+      modeGroup.classList.add('hidden');  // Cacher les modes
+      modeSelect.innerHTML = '';          // Vider la liste des modes
       return;
     }
   
@@ -112,54 +119,87 @@ export class DMXPatcher {
   
     if (results.length === 0) {
       list.classList.add('hidden');
+      modeGroup.classList.add('hidden');  // Pas de correspondance → cacher modes
+      modeSelect.innerHTML = '';
       return;
+    }
+  
+    // Vérifier si le terme correspond exactement à un modèle
+    const exactMatch = projectorLibrary.find(p => p.model.toLowerCase() === term.toLowerCase());
+    if (!exactMatch) {
+      modeGroup.classList.add('hidden');
+      modeSelect.innerHTML = '';
     }
   
     results.forEach(result => {
       const model = result.item.model;
       const brand = result.item.brand;
-    
+  
       let highlightedBrand = brand;
       let highlightedModel = model;
-    
-      // Appliquer le surlignage sur les correspondances
+  
       if (result.matches) {
         result.matches.forEach(match => {
           const value = match.value;
           let highlighted = '';
           let lastIndex = 0;
-    
+  
           match.indices.forEach(([start, end]) => {
             highlighted += value.slice(lastIndex, start);
             highlighted += '<strong>' + value.slice(start, end + 1) + '</strong>';
             lastIndex = end + 1;
           });
           highlighted += value.slice(lastIndex);
-    
+  
           if (match.key === 'brand') highlightedBrand = highlighted;
           if (match.key === 'model') highlightedModel = highlighted;
         });
       }
-    
+  
       const li = document.createElement('li');
       li.innerHTML = `${highlightedBrand} ${highlightedModel}`;
       li.addEventListener('click', () => {
-        this.pName.value = model; // Remplir avec le modèle uniquement
+        this.pName.value = model; // Remplit avec le modèle uniquement
         list.classList.add('hidden');
         this.populateModes(model);
       });
       list.appendChild(li);
     });
-    
-    list.classList.remove('hidden');
   
     list.classList.remove('hidden');
   }
+  
+
+  checkIfValidProjectorName() {
+    const input = this.pName.value.trim().toLowerCase();
+    const modeGroup = document.getElementById('mode-group');
+    const modeSelect = document.getElementById('modeSelect');
+  
+    const found = projectorLibrary.find(p => p.name.toLowerCase() === input);
+  
+    if (!found) {
+      modeGroup.classList.add('hidden');
+      modeSelect.innerHTML = '';
+    }
+  }
+  
+  
+
+
+
+
+
+
 
   onProjectorKeyDown(e) {
     const list = document.getElementById('projector-suggestions');
+    if (!list) return;
     const items = list.querySelectorAll('li');
     if (items.length === 0) return;
+  
+    const input = document.getElementById('projectorName'); // champ de saisie
+    const modeGroup = document.getElementById('mode-group'); // conteneur du mode
+    const modeSelect = document.getElementById('modeSelect'); // liste des modes
   
     if (e.key === 'ArrowDown') {
       e.preventDefault();
@@ -172,15 +212,33 @@ export class DMXPatcher {
     } else if (e.key === 'Enter') {
       e.preventDefault();
       if (this.activeSuggestionIndex >= 0) {
-        // Si une suggestion est active, la sélectionner
+        // Sélection via flèche puis entrée : simule un clic
         items[this.activeSuggestionIndex].click();
         this.activeSuggestionIndex = -1;
       } else {
-        // Sinon, masquer simplement la liste de suggestions
+        // Validation saisie manuelle (pas sélection via flèches)
         list.classList.add('hidden');
+  
+        const enteredText = input.value.trim().toLowerCase();
+        // On vérifie sur projectorLibrary et propriété model (pas name)
+        const found = projectorLibrary.find(p => p.model.toLowerCase() === enteredText);
+  
+        if (!found) {
+          // Pas trouvé : masquer modes
+          modeGroup.classList.add('hidden');
+          modeSelect.innerHTML = '';
+        } else {
+          // Trouvé : on peut appeler populateModes pour être sûr
+          this.populateModes(found.model);
+        }
+        this.activeSuggestionIndex = -1;
       }
+    } else {
+      // Sur toute autre touche, on reset l'index de sélection active
+      this.activeSuggestionIndex = -1;
     }
   }
+  
   
 
 
