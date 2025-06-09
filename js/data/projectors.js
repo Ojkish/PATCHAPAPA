@@ -290,9 +290,12 @@ export  const projectorLibrary = [
     model: "COLORado",
     brand: "Chauvet",
     modes: [
-      { name: "20-ch", channels: 20 },
-      { name: "44-ch", channels: 44 }
-    ]
+      { name: "TOUR", channels: 11 },
+      { name: "ARC1", channels: 3 },
+      { name: "ARC1 + D", channels: 4 },
+      { name: "ARC2", channels: 4 },
+      { name: "ARC2 + D", channels: 5 },
+     ]
   },
 
   
