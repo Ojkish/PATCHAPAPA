@@ -308,7 +308,18 @@ export  const projectorLibrary = [
       { name: "18Ch", channels: 18 },
      ]
   },
-
+  {
+    model: "Strike4 Array",
+    brand: "Chauvet",
+    modes: [
+      { name: "10Ch", channels: 10 },
+      { name: "6Ch", channels: 6 },
+      { name: "5Ch", channels: 5 },
+      { name: "4Ch", channels: 4 },
+      { name: "3Ch", channels: 3 },
+      { name: "1Ch", channels: 1 },
+     ]
+  },
   
   // —————————————————————————————————————————————————————
   // Elation
