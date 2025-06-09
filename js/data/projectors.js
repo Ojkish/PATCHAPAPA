@@ -358,6 +358,7 @@ export  const projectorLibrary = [
     ]
   },
   
+  
   {
     model: "Limelight PAR L",
     brand: "Elation",
@@ -369,6 +370,16 @@ export  const projectorLibrary = [
       { name: "Ext", channels: 17 },
       { name: "Std Zones", channels: 17 },
       { name: "Ext Zones", channels: 25 },
+
+    ]
+  },{
+    model: "Fresnel KL4",
+    brand: "Elation",
+    modes: [
+      { name: "1CH", channels: 1 },
+      { name: "2CH", channels: 2 },
+      { name: "3CH", channels: 3 },
+      { name: "4CH", channels: 4 },
 
     ]
   },
