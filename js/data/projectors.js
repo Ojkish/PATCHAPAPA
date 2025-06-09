@@ -604,6 +604,26 @@ export  const projectorLibrary = [
       { name: "Ext", channels: 65 }
     ]
   },
+ // —————————————————————————————————————————————————————
+  // Starway
+  // —————————————————————————————————————————————————————
+  {
+    model: "ToneKolor",
+    brand: "Starway",
+    modes: [
+      { name: "15-ch", channels: 15 },
+      { name: "14-ch", channels: 14 },
+      { name: "10-ch", channels: 10 },
+      { name: "9-ch", channels: 9 },
+      { name: "8-ch", channels: 8 },
+      { name: "6-ch", channels: 6 },
+      { name: "4-ch", channels: 4 },
+      { name: "3-ch", channels: 3 },
+      { name: "1-ch", channels: 1 }
+    ]
+  },
+
+
 
 
   // —————————————————————————————————————————————————————
