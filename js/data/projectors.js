@@ -94,7 +94,32 @@ export  const projectorLibrary = [
       { name: "RGBW + FX", channels: 12 }
     ]
   },
-
+  {
+    model: "MAC Ultra Performance",
+    brand: "Martin",
+    modes: [
+      { name: "Basic", channels: 22 },
+      { name: "Extended", channels: 26 },
+      { name: "Pixel", channels: 74 }
+    ]
+  },
+  {
+    model: "Atomic 3000 LED",
+    brand: "Martin",
+    modes: [
+      { name: "3ch", channels: 3 },
+      { name: "4ch", channels: 4 },
+      { name: "Extended", channels: 14 },
+      ]
+  },
+  {
+    model: "PAR RUSH 2 RGBW Zoom",
+    brand: "Martin",
+    modes: [
+      { name: "5ch", channels: 5 },
+      { name: "9ch", channels: 9 }
+    ]
+  },
 
   // —————————————————————————————————————————————————————
   // Robe
@@ -392,7 +417,25 @@ export  const projectorLibrary = [
       { name: "20-ch", channels: 20 }
     ]
   },
+  {
+    model: "Paladin Panel",
+    brand: "Elation",
+    modes: [
+      { name: "RGB", channels: 3 },
+      { name: "8bit", channels: 4 },
+      { name: "16bit", channels: 8 },
+      { name: "16bit Dim", channels: 10 },
+      { name: "Extended", channels: 16 },
+      { name: "Cells", channels: 80 },
+      { name: "Cells Dim", channels: 82 },
+      { name: "Ext-Cells", channels: 88 }
+
+
+
+    ]
+  },
   
+
   
   {
     model: "Limelight PAR L",
@@ -404,10 +447,23 @@ export  const projectorLibrary = [
       { name: "Std", channels: 13 },
       { name: "Ext", channels: 17 },
       { name: "Std Zones", channels: 17 },
-      { name: "Ext Zones", channels: 25 },
+      { name: "Ext Zones", channels: 25 }
 
     ]
-  },{
+  },
+  {
+    model: "Fresnel 4CW",
+    brand: "Elation",
+    modes: [
+      { name: "Dimmer", channels: 1 },
+      { name: "Dimmer16bit", channels: 2 },
+      { name: "3CH", channels: 3 },
+      { name: "Standard", channels: 4 },
+      { name: "Extended", channels: 5 },
+
+    ]
+  },
+  {
     model: "Fresnel KL4",
     brand: "Elation",
     modes: [
@@ -418,7 +474,43 @@ export  const projectorLibrary = [
 
     ]
   },
+  {
+    model: "Fresnel KL8 FC",
+    brand: "Elation",
+    modes: [
+      { name: "Dimmer", channels: 1 },
+      { name: "Dimmer Color", channels: 7 },
+      { name: "Standard", channels: 12 },
+      { name: "Extended", channels: 19 },
+      { name: "CMY", channels: 10 },
+      { name: "CMY Extended", channels: 15 },
 
+    ]
+  },
+  {
+    model: "ARENA Q7 Zoom",
+    brand: "Elation",
+    modes: [
+      { name: "5ch", channels: 5 },
+      { name: "6ch", channels: 6 },
+      { name: "7ch", channels: 7 },
+      { name: "9ch", channels: 9 },
+      { name: "10ch", channels: 10 },
+      { name: "15ch", channels: 15 },
+      { name: "16ch", channels: 16 },
+
+    ]
+  },
+  {
+    model: "DARTZ 360",
+    brand: "Elation",
+    modes: [
+      { name: "Basic", channels: 19 },
+      { name: "Standard", channels: 22 },
+      { name: "Extended", channels: 25 },
+
+    ]
+  },
 
   // —————————————————————————————————————————————————————
   // Vari-Lite
