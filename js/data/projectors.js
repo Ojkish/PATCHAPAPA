@@ -714,6 +714,32 @@ export  const projectorLibrary = [
       { name: "1-ch", channels: 1 }
     ]
   },
+  {
+    model: "ParKolor",
+    brand: "Starway",
+    modes: [
+      { name: "15ch", channels: 15 },
+      { name: "10ch", channels: 10 },
+      { name: "7-ch", channels: 7 },
+    ]
+  },
+  {
+    model: "Solar 1050",
+    brand: "Starway",
+    modes: [
+      { name: "27-ch", channels: 27 },
+      { name: "25-ch", channels: 25 },
+      { name: "20-ch", channels: 20 },
+      { name: "18-ch", channels: 18 },
+      { name: "17-ch", channels: 17 },
+      { name: "10-ch", channels: 10 },
+      { name: "9-ch", channels: 9 },
+      { name: "5-ch", channels: 5 },
+      { name: "2-ch", channels: 2 },
+      { name: "1-ch", channels: 1 }
+
+    ]
+  },
 
 
 
