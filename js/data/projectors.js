@@ -541,12 +541,21 @@ export  const projectorLibrary = [
       { name: "Extended", channels: 62 }
     ]
   },
+  
   {
     model: "Ghibli",
     brand: "Ayrton",
     modes: [
       { name: "Basic", channels: 26 },
       { name: "Extended", channels: 52 }
+    ]
+  },
+  {
+    model: "RIVALE Profile",
+    brand: "Ayrton",
+    modes: [
+      { name: "Std", channels: 42 },
+      { name: "Ext", channels: 65 }
     ]
   },
 
