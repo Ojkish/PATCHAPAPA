@@ -280,6 +280,16 @@ export  const projectorLibrary = [
     model: "Maverick MK1 Hybrid",
     brand: "Chauvet",
     modes: [
+      { name: "ARC1", channels: 11 },
+      { name: "ARC1 + D", channels: 4 },
+      { name: "ARC2", channels: 4 },
+      { name: "ARC2 + D", channels: 5 },
+     ]
+  },
+  {
+    model: "COLORado",
+    brand: "Chauvet",
+    modes: [
       { name: "20-ch", channels: 20 },
       { name: "44-ch", channels: 44 }
     ]
