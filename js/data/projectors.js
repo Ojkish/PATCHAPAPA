@@ -222,6 +222,21 @@ export  const projectorLibrary = [
   // —————————————————————————————————————————————————————
   // Chauvet / Rogue / Maverick
   // —————————————————————————————————————————————————————
+  
+  {
+    model: "Rogue Wash R2",
+    brand: "Chauvet",
+    modes: [
+      { name: "56-ch", channels: 56 },
+      { name: "54-ch", channels: 54 },
+      { name: "54-ch MS", channels: 54 },
+      { name: "33-ch", channels: 33 },
+      { name: "33-ch MS", channels: 33 },
+      { name: "22-ch", channels: 22 },
+      { name: "17-ch", channels: 17 },
+      { name: "15-ch", channels: 15 }
+    ]
+  },
   {
     model: "Rogue R1 Spotlight",
     brand: "Chauvet",
@@ -244,20 +259,6 @@ export  const projectorLibrary = [
     modes: [
       { name: "22-ch", channels: 22 },
       { name: "44-ch", channels: 44 }
-    ]
-  },
-  {
-    model: "Rogue Wash R2",
-    brand: "Chauvet",
-    modes: [
-      { name: "56-ch", channels: 56 },
-      { name: "54-ch", channels: 54 },
-      { name: "54-ch MS", channels: 54 },
-      { name: "33-ch", channels: 33 },
-      { name: "33-ch MS", channels: 33 },
-      { name: "22-ch", channels: 22 },
-      { name: "17-ch", channels: 17 },
-      { name: "15-ch", channels: 15 }
     ]
   },
   {
