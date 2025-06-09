@@ -297,6 +297,16 @@ export  const projectorLibrary = [
       { name: "ARC2 + D", channels: 5 },
      ]
   },
+  {
+    model: "Ovation-Reve E3-IP",
+    brand: "Chauvet",
+    modes: [
+      { name: "12Ch", channels: 12 },
+      { name: "14Ch1", channels: 14 },
+      { name: "14Ch2", channels: 14 },
+      { name: "18Ch", channels: 18 },
+     ]
+  },
 
   
   // —————————————————————————————————————————————————————
