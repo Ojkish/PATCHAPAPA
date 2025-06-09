@@ -357,20 +357,18 @@ export  const projectorLibrary = [
       { name: "20-ch", channels: 20 }
     ]
   },
+  
   {
-    model: "KL Profile FC",
+    model: "Limelight PAR L",
     brand: "Elation",
     modes: [
-      { name: "Comp", channels: 5 },
-      { name: "Std", channels: 12 },
-      { name: "Ext", channels: 21 },
-      { name: "CMY", channels: 10 },
-      { name: "CMY Ext", channels: 17 },
-      { name: "RGB", channels: 10 },
-      { name: "RGB Ext", channels: 17 }
-
-
-
+      { name: "RGB", channels: 4 },
+      { name: "CMY", channels: 12 },
+      { name: "CMY Ext", channels: 15 },
+      { name: "Std", channels: 13 },
+      { name: "Ext", channels: 17 },
+      { name: "Std Zones", channels: 17 },
+      { name: "Ext Zones", channels: 25 },
 
     ]
   },
