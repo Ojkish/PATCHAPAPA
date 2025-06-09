@@ -224,7 +224,7 @@ export  const projectorLibrary = [
   // —————————————————————————————————————————————————————
   
   {
-    model: "Rogue Wash R2",
+    model: "Rogue Wash R2X",
     brand: "Chauvet",
     modes: [
       { name: "56-ch", channels: 56 },
