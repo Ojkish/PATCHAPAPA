@@ -350,6 +350,26 @@ export  const projectorLibrary = [
   // Elation
   // —————————————————————————————————————————————————————
   {
+    model: "KL Profile FC",
+    brand: "Elation",
+    modes: [
+      { name: "Inten", channels: 1 },
+      { name: "Comp", channels: 7 },
+      { name: "Std", channels: 12 },
+      { name: "Ext", channels: 19 },
+      { name: "CMY", channels: 10 },
+      { name: "CMY Extended", channels: 15 },
+      { name: "RGB", channels: 10 },
+      { name: "RGB Extended", channels: 15 },
+
+    ]
+  },
+  
+  
+  
+  
+  
+  {
     model: "Artiste Picasso",
     brand: "Elation",
     modes: [
