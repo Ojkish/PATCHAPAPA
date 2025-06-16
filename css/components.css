@@ -51,6 +51,9 @@ input[type="number"] {
 
 /* Styles des boutons d'action principaux */
 .action-button {
+  display: flex;                /* Ajouté : permet l'usage de flexbox */
+  align-items: center;          /* Centre verticalement le contenu */
+  justify-content: center;      /* Centre horizontalement le contenu */
   padding: 15px;
   font-size: 1.1rem;
   font-weight: 500;
@@ -59,13 +62,12 @@ input[type="number"] {
   border: none;
   cursor: pointer;
   transition: opacity 0.2s;
+  text-align: center;           /* S'assure que le texte dans le bouton est centré */
 }
 
 .action-button.primary {
   background: var(--secondary-color);
   color: #fff;
-  display: inline-flex;
-  align-items: center;
   gap: 5px;
 }
 
@@ -128,7 +130,7 @@ input[type="number"] {
   top: 50px;
   left: 20%; 
   text-align: center;
-  background: rgb(44, 196, 44);
+  background: rgb(84, 132, 84);
   color:white;
   padding: 12px 20px;
   border-radius: 4px;
@@ -187,7 +189,7 @@ input[type="number"] {
   color: white;
 }
 
-/* Table header sticky */
+/* les tetes de colonnes restent apparentes dans page resultats */
 #results-table {
   width: 100%;
   border-collapse: collapse;
@@ -203,12 +205,12 @@ input[type="number"] {
   border-bottom: 1px solid #ccc;
 }
 
-/* Zebra striping */
+/* une ligne sur deux en gris dans la page resultats */
 #results-table tbody tr:nth-child(even) {
   background-color: #f9f9f9;
 }
 
-/* Highlighting the "Adresse Début" column */
+/* mise en valeur de l'adresse de debut dans l'adresse de resultats*/
 #results-table td:nth-child(3),
 #results-table th:nth-child(3) {
   /*background-color: #f4eabf; Light yellow background*/
