@@ -408,13 +408,20 @@ export class DMXPatcher {
       }
     }
 
-    // 4) Affichage et stockage
-    this.outputHTML = html;
-    document.getElementById('output').innerHTML = html;
-    saveToLocalStorage('dmx_patch_results', html);
-    showToast('Patch réalisé avec succès !', 2500);
-    this.univ.value = currentU;
-    this.addr.value = currentA;
+      // 4) Affichage et stockage
+      this.outputHTML = html;
+      document.getElementById('output').innerHTML = html;
+      saveToLocalStorage('dmx_patch_results', html);
+      showToast('Patch réalisé avec succès !', 2500);
+  
+      // ** Correction rollover **
+      if (currentA > 512) {
+        currentU += 1;
+        currentA = 1;
+      }
+  
+      this.univ.value = currentU;
+      this.addr.value = currentA;
   }
 }
 
