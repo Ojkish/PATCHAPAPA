@@ -81,16 +81,20 @@ input[type="number"] {
 }
 
 /* Styles pour les items individuels de résultat (Affichage patch) */
-.result-item {
-  display: flex;
-  justify-content: space-between;
+#patch-section #output .result-item {
+  display: grid;
+  grid-template-columns: 30% 1fr 1fr 1fr; /* ajuste les proportions : Nom / Univers / Début / Fin */
+  column-gap: 10px;
   align-items: center;
+  padding: 8px 10px;
+  min-height: 40px;      /* même hauteur pour toutes les lignes */
   background: #fff;
-  padding: 10px;
   margin-bottom: 5px;
   border-radius: 4px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
 }
+
+
 
 .result-item .address-start {
   color: var(--primary-color);
