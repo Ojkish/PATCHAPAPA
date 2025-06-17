@@ -211,7 +211,7 @@ input[type="number"] {
 
 /* une ligne sur deux en gris dans la page resultats */
 #results-table tbody tr:nth-child(even) {
-  background-color: #f9f9f9;
+  background-color: #dbd7d7d4;
 }
 
 /* mise en valeur de l'adresse de debut dans l'adresse de resultats*/
@@ -222,3 +222,76 @@ input[type="number"] {
   color: #4438e9;
 }
 
+/* 1. Autorise le scroll horizontal DANS la zone grise */
+#results-section .main-container {
+  overflow-x: auto;
+  /* gère le padding latéral si tu veux */
+  padding: 20px 10px;
+}
+
+/* 2. Fais en sorte que la table prenne sa largeur naturelle */
+#results-section .main-container table {
+  width: max-content;   /* s’adapte à la somme des colonnes */
+  min-width: 100%;      /* au moins la largeur du conteneur */
+  border-collapse: collapse;
+}
+
+/* 3. (Optionnel) Ajuste la hauteur et styles existants */
+#results-section .main-container table th,
+#results-section .main-container table td {
+  padding: 8px 10px;
+  white-space: nowrap;
+  text-align: left;
+}
+
+/* 1. Autorise le scroll horizontal DANS la zone grise */
+#results-section .main-container {
+  overflow-x: auto;
+  /* gère le padding latéral si tu veux */
+  padding: 20px 10px;
+}
+
+/* 2. Fais en sorte que la table prenne sa largeur naturelle */
+#results-section .main-container table {
+  width: max-content;   /* s’adapte à la somme des colonnes */
+  min-width: 100%;      /* au moins la largeur du conteneur */
+  border-collapse: collapse;
+}
+
+/* 3. (Optionnel) Ajuste la hauteur et styles existants */
+#results-section .main-container table th,
+#results-section .main-container table td {
+  padding: 8px 10px;
+  white-space: nowrap;
+  text-align: left;
+}
+/* === Scroll uniquement sur le tableau de la page Résultats === */
+
+/* 1) On retire tout scroll horizontal de .main-container */
+#results-section .results-container {
+  overflow-x: visible;
+}
+
+/* 2) On encapsule le scroll DANS .results-scroll */
+#results-section .results-scroll {
+  display: block;       /* pour que overflow soit pris en compte */
+  overflow-x: auto;     /* scroll horizontal si le tableau est trop large */
+  width: 100%;          /* prend toute la largeur disponible */
+}
+
+/* 3) On force la table à prendre sa largeur naturelle */
+#results-section .results-scroll table {
+  display: block;       /* idem : le block permet le scroll */
+  width: max-content;   /* s’adapte à la somme des colonnes */
+  min-width: 100%;      /* au moins la largeur du conteneur parent */
+  border-collapse: collapse;
+}
+
+/* 4) On conserve ton style de cellules */
+#results-section .results-scroll table th,
+#results-section .results-scroll table td {
+  padding: 8px 10px;
+  white-space: nowrap;
+  text-align: left;
+  border-bottom: 1px solid #ccc;
+}
