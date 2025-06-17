@@ -31,11 +31,6 @@ export class DMXPatchResults {
     this.emailBtn.addEventListener('click', () => this.sendEmail());
   }
 
-  /**
-   * Charge les résultats depuis le localStorage,
-   * extrait name, type, universe, startAddress, endAddress, channels,
-   * alimente le datalist de suggestions (types uniquement) et le select des univers.
-   */
   loadResults() {
     const rawHTML = getFromLocalStorage('dmx_patch_results');
     if (!rawHTML) return;
@@ -53,20 +48,18 @@ export class DMXPatchResults {
       return { name, type, universe: u, startAddress: s, endAddress: e, channels: ch };
     });
 
-    // ► Suggestions de types dans le champ de filtre (datalist)
+    // Suggestions de types
     const uniqueTypes = [...new Set(this.results.map(r => r.type))]
       .sort((a, b) => a.localeCompare(b, undefined, { sensitivity: 'base' }));
     const dataList = document.getElementById('name-suggestions');
-    if (dataList) {
-      dataList.innerHTML = '';
-      uniqueTypes.forEach(t => {
-        const opt = document.createElement('option');
-        opt.value = t;
-        dataList.appendChild(opt);
-      });
-    }
+    if (dataList) dataList.innerHTML = '';
+    uniqueTypes.forEach(t => {
+      const opt = document.createElement('option');
+      opt.value = t;
+      dataList.appendChild(opt);
+    });
 
-    // ► Menu déroulant des univers sans doublons, trié
+    // Univers uniques triés
     const uniqueUniverses = [...new Set(this.results.map(r => r.universe))].sort((a, b) => a - b);
     this.uFilter.innerHTML = '<option value="">Tous les univers</option>';
     uniqueUniverses.forEach(u => {
@@ -83,20 +76,20 @@ export class DMXPatchResults {
     this.body.innerHTML = '';
     arr.forEach(r => {
       const tr = document.createElement('tr');
+      // Adresse de début avec univers en petit
+      const start = `<span class="universe small">${r.universe}</span>.` +
+                    `<span class="address highlight">${r.startAddress}</span>`;
+      // Adresse de fin : seulement le numéro, style normal
+      const end = `<span class="address end">${r.endAddress}</span>`;
       tr.innerHTML =
         `<td>${r.name}</td>` +
-        `<td>${r.universe}</td>` +
-        `<td>${r.startAddress}</td>` +
-        `<td>${r.endAddress}</td>` +
+        `<td class="address-cell start-cell">${start}</td>` +
+        `<td class="address-cell end-cell">${end}</td>` +
         `<td>${r.channels}</td>`;
       this.body.appendChild(tr);
     });
   }
 
-  /**
-   * Tri des résultats. Pour 'name', tri naturel ;
-   * pour 'startAddress' et 'endAddress', compare d'abord l'univers.
-   */
   sortBy(e) {
     const col = e.target.dataset.sort;
     const dir = this.currentSort.column === col && this.currentSort.direction === 'asc' ? 'desc' : 'asc';
@@ -133,14 +126,28 @@ export class DMXPatchResults {
   }
 
   exportCSV() {
-    const header = ['Nom','Univers','Adresse Début','Adresse Fin','Canaux'];
-    const rows = this.results.map(r => [r.name, r.universe, r.startAddress, r.endAddress, r.channels]);
-    const csv = [header, ...rows].map(r => r.join(',')).join('\n');
-    const blob = new Blob([csv], { type: 'text/csv' });
+    // Construction du CSV avec en-tête adapté et adresses fusionnées
+    const header = ['Nom', 'Adresse Début', 'Adresse Fin', 'Canaux'];
+
+    const rows = this.results.map(r => [
+      r.name,
+      `${r.universe}.${r.startAddress}`,
+      `${r.universe}.${r.endAddress}`,
+      r.channels
+    ]);
+
+    const csvContent = [header, ...rows]
+      .map(row => row.join(','))
+      .join('\n');
+
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
     const link = document.createElement('a');
     link.href = URL.createObjectURL(blob);
     link.download = 'patch_results.csv';
+    link.style.display = 'none';
+    document.body.appendChild(link);
     link.click();
+    document.body.removeChild(link);
   }
 
   sendEmail() {
