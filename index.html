@@ -76,37 +76,42 @@
 
   <!-- Section Résultats -->
   <section id="results-section" class="hidden">
-    <div class="main-container">
-      <h1>Résultats du Patch DMX</h1>
-      <div class="filter-container">
-        <input type="text" id="name-filter" placeholder="Filtrer par nom">
-        <select id="universe-filter">
-          <option value="">Tous les univers</option>
-        </select>
-      </div>
-      <table id="results-table">
-        <thead>
-          <tr>
-            <th data-sort="name">Nom</th>
-            <th data-sort="universe">Univers</th>
-            <th data-sort="startAddress">Adresse Début</th>
-            <th data-sort="endAddress">Adresse Fin</th>
-            <th data-sort="channels">Canaux</th>
-          </tr>
-        </thead>
-        <tbody id="results-body"></tbody>
-      </table>
-      <div class="export-buttons">
-        <div class="buttons-container">
-          <button id="export-csv" class="action-button primary" style="display: flex; align-items: center;">
-            📄 Export CSV
-          </button>
-          <button id="send-email" class="action-button primary" style="display: flex; align-items: center;">
-            ✉️ Envoyer par e-mail
-          </button>
+    <div class="main-container results-container">
+      <!-- 1) HEADER FIXE -->
+      <div class="results-header">
+        <h1>Résultats du Patch DMX</h1>
+        <div class="filter-container">
+          <input type="text" id="name-filter" placeholder="Filtrer par nom">
+          <select id="universe-filter">
+            <option value="">Tous les univers</option>
+          </select>
         </div>
       </div>
-      
+  
+      <!-- 2) CONTENU SCROLLABLE -->
+      <div class="results-scroll">
+        <table id="results-table">
+          <thead>
+            <tr>
+              <th data-sort="name">Nom</th>
+              <th data-sort="universe">Univers</th>
+              <th data-sort="startAddress">Adresse Début</th>
+              <th data-sort="endAddress">Adresse Fin</th>
+              <th data-sort="channels">Canaux</th>
+            </tr>
+          </thead>
+          <tbody id="results-body"></tbody>
+        </table>
+      </div>
+  
+      <!-- 3) FOOTER FIXE -->
+      <div class="export-buttons results-footer">
+        <div class="buttons-container">
+          <button id="export-csv" class="action-button primary">📄 Export CSV</button>
+          <button id="send-email" class="action-button primary">✉️ Envoyer par e-mail</button>
+        </div>
+      </div>
+    </div>
   </section>
 
   <!-- Modules JavaScript -->
@@ -118,3 +123,4 @@
   <script type="module" src="./js/results.js"></script>
 </body>
 </html>
+<!--Sylvain Rausa >
