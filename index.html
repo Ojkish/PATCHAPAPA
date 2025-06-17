@@ -81,7 +81,9 @@
       <div class="results-header">
         <h1>Résultats du Patch DMX</h1>
         <div class="filter-container">
-          <input type="text" id="name-filter" placeholder="Filtrer par nom">
+          <input type="text" id="name-filter" list="name-suggestions" placeholder="Filtrer par nom">
+          <datalist id="name-suggestions"></datalist>
+                    
           <select id="universe-filter">
             <option value="">Tous les univers</option>
           </select>
@@ -93,11 +95,10 @@
         <table id="results-table">
           <thead>
             <tr>
-              <th data-sort="name">Nom</th>
-              <th data-sort="universe">Univers</th>
-              <th data-sort="startAddress">Adresse Début</th>
-              <th data-sort="endAddress">Adresse Fin</th>
-              <th data-sort="channels">Canaux</th>
+              <th data-sort="name">Nom <span class="sort-icon">⇅</span></th>
+              <th data-sort="startAddress">Adresse <span class="sort-icon">⇅</span></th>
+              <th data-sort="endAddress">Fin <span class="sort-icon">⇅</span></th>
+              <th data-sort="channels">Ch <span class="sort-icon">⇅</span></th>
             </tr>
           </thead>
           <tbody id="results-body"></tbody>
