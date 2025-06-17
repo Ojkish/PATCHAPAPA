@@ -13,6 +13,7 @@ export class DMXPatchResults {
   }
 
   initElements() {
+    
     this.body = document.getElementById('results-body');
     this.nFilter = document.getElementById('name-filter');
     this.uFilter = document.getElementById('universe-filter');
