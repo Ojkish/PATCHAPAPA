@@ -34,7 +34,7 @@ export class DMXPatchResults {
   /**
    * Charge les résultats depuis le localStorage,
    * extrait name, type, universe, startAddress, endAddress, channels,
-   * alimente le datalist de suggestions et le select des univers.
+   * alimente le datalist de suggestions (types uniquement) et le select des univers.
    */
   loadResults() {
     const rawHTML = getFromLocalStorage('dmx_patch_results');
@@ -53,10 +53,9 @@ export class DMXPatchResults {
       return { name, type, universe: u, startAddress: s, endAddress: e, channels: ch };
     });
 
-    // Suggestions de types
-    const uniqueTypes = [...new Set(this.results.map(r => r.type))].sort((a, b) =>
-      a.localeCompare(b, undefined, { sensitivity: 'base' })
-    );
+    // ► Suggestions de types dans le champ de filtre (datalist)
+    const uniqueTypes = [...new Set(this.results.map(r => r.type))]
+      .sort((a, b) => a.localeCompare(b, undefined, { sensitivity: 'base' }));
     const dataList = document.getElementById('name-suggestions');
     if (dataList) {
       dataList.innerHTML = '';
@@ -67,7 +66,7 @@ export class DMXPatchResults {
       });
     }
 
-    // Univers uniques triés
+    // ► Menu déroulant des univers sans doublons, trié
     const uniqueUniverses = [...new Set(this.results.map(r => r.universe))].sort((a, b) => a - b);
     this.uFilter.innerHTML = '<option value="">Tous les univers</option>';
     uniqueUniverses.forEach(u => {
