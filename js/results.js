@@ -1,5 +1,3 @@
-// js/results.js
-
 import { generatePlainTextEmail } from './emailFormatter.js';
 import { getFromLocalStorage } from './utils.js';
 
@@ -21,7 +19,7 @@ export class DMXPatchResults {
     this.csvBtn = document.getElementById('export-csv');
     this.emailBtn = document.getElementById('send-email');
 
-    // Tri au clic
+    // Tri au clic sur les en-têtes
     document.querySelectorAll('#results-table th').forEach(th => {
       th.addEventListener('click', e => this.sortBy(e));
     });
@@ -33,27 +31,52 @@ export class DMXPatchResults {
     this.emailBtn.addEventListener('click', () => this.sendEmail());
   }
 
+  /**
+   * Charge les résultats depuis le localStorage,
+   * extrait name, type, universe, startAddress, endAddress, channels,
+   * alimente le datalist de suggestions et le select des univers.
+   */
   loadResults() {
     const rawHTML = getFromLocalStorage('dmx_patch_results');
     if (!rawHTML) return;
-    // Reconstruire le DOM temporaire pour parser
+
     const tmp = document.createElement('div');
     tmp.innerHTML = rawHTML;
+
     this.results = Array.from(tmp.querySelectorAll('.result-item')).map(it => {
-      const nameText = it.querySelector('span:first-child').textContent;
-      const name = nameText.match(/.+(?=\s\d+)/)[0] + ' ' + nameText.match(/\d+$/)[0];
+      const name = it.querySelector('span:first-child strong').textContent.trim();
+      const typeMatch = name.match(/(.+)\s+\d+$/);
+      const type = typeMatch ? typeMatch[1] : name;
       const [u, s] = it.querySelector('.address-start').textContent.split('.').map(Number);
       const [_, e] = it.querySelector('.address-end').textContent.split('.').map(Number);
-      const ch = parseInt(it.querySelector('span:last-child').textContent, 10);
-      return { name, universe: u, startAddress: s, endAddress: e, channels: ch };
+      const ch = parseInt(it.querySelector('span:last-child').textContent.replace('CH', ''), 10);
+      return { name, type, universe: u, startAddress: s, endAddress: e, channels: ch };
     });
-    // Remplir le filtre univers
-    [...new Set(this.results.map(r => r.universe))].sort((a,b) => a-b).forEach(u => {
+
+    // Suggestions de types
+    const uniqueTypes = [...new Set(this.results.map(r => r.type))].sort((a, b) =>
+      a.localeCompare(b, undefined, { sensitivity: 'base' })
+    );
+    const dataList = document.getElementById('name-suggestions');
+    if (dataList) {
+      dataList.innerHTML = '';
+      uniqueTypes.forEach(t => {
+        const opt = document.createElement('option');
+        opt.value = t;
+        dataList.appendChild(opt);
+      });
+    }
+
+    // Univers uniques triés
+    const uniqueUniverses = [...new Set(this.results.map(r => r.universe))].sort((a, b) => a - b);
+    this.uFilter.innerHTML = '<option value="">Tous les univers</option>';
+    uniqueUniverses.forEach(u => {
       const opt = document.createElement('option');
       opt.value = u;
       opt.textContent = u;
       this.uFilter.appendChild(opt);
     });
+
     this.render(this.results);
   }
 
@@ -61,27 +84,41 @@ export class DMXPatchResults {
     this.body.innerHTML = '';
     arr.forEach(r => {
       const tr = document.createElement('tr');
-      tr.innerHTML = `<td>${r.name}</td><td>${r.universe}</td>` +
-                     `<td>${r.startAddress}</td><td>${r.endAddress}</td>` +
-                     `<td>${r.channels}</td>`;
+      tr.innerHTML =
+        `<td>${r.name}</td>` +
+        `<td>${r.universe}</td>` +
+        `<td>${r.startAddress}</td>` +
+        `<td>${r.endAddress}</td>` +
+        `<td>${r.channels}</td>`;
       this.body.appendChild(tr);
     });
   }
 
+  /**
+   * Tri des résultats. Pour 'name', tri naturel ;
+   * pour 'startAddress' et 'endAddress', compare d'abord l'univers.
+   */
   sortBy(e) {
     const col = e.target.dataset.sort;
     const dir = this.currentSort.column === col && this.currentSort.direction === 'asc' ? 'desc' : 'asc';
     document.querySelectorAll('#results-table th')
       .forEach(th => th.classList.remove('sorted-asc', 'sorted-desc'));
     e.target.classList.add(`sorted-${dir}`);
+
     this.results.sort((a, b) => {
+      let diff;
       if (col === 'name') {
-        return dir === 'asc'
-          ? a.name.localeCompare(b.name)
-          : b.name.localeCompare(a.name);
+        diff = a.name.localeCompare(b.name, undefined, { numeric: true, sensitivity: 'base' });
+      } else if (col === 'startAddress') {
+        diff = a.universe - b.universe || a.startAddress - b.startAddress;
+      } else if (col === 'endAddress') {
+        diff = a.universe - b.universe || a.endAddress - b.endAddress;
+      } else {
+        diff = a[col] - b[col];
       }
-      return dir === 'asc' ? a[col] - b[col] : b[col] - a[col];
+      return dir === 'asc' ? diff : -diff;
     });
+
     this.currentSort = { column: col, direction: dir };
     this.applyFilters();
   }
@@ -90,7 +127,7 @@ export class DMXPatchResults {
     const nf = this.nFilter.value.toLowerCase();
     const uf = this.uFilter.value;
     const filtered = this.results.filter(r =>
-      r.name.toLowerCase().includes(nf) &&
+      r.type.toLowerCase().includes(nf) &&
       (!uf || r.universe === parseInt(uf, 10))
     );
     this.render(filtered);
