@@ -11,6 +11,7 @@ import { showToast } from './notification.js';
  */
 export class DMXPatcher {
   constructor() {
+    this.history = [];                     // ← pile d’états
     this.occupiedChannels = new Map();     // Map<univers, Set<adresses occupées>>
     this.projectorCounters = {};           // Compteur de projecteurs par nom
     this.activeSuggestionIndex = -1;
@@ -19,6 +20,48 @@ export class DMXPatcher {
     this.updateStartAddress();
     this.activeSuggestionIndex = -1;
   }
+
+   /** Sauvegarde l’état courant pour un futur undo */
+   saveState() {
+    // Clone occupéChannels
+    const occClone = new Map();
+    for (const [u, set] of this.occupiedChannels) {
+      occClone.set(u, new Set([...set]));
+    }
+    // Clone projecteurCounters
+    const pcClone = { ...this.projectorCounters };
+    // Clone du HTML de sortie
+    const htmlClone = this.outputHTML;
+    // On pousse tout dans la pile
+    this.history.push({ occupiedChannels: occClone, projectorCounters: pcClone, outputHTML: htmlClone });
+  }
+
+/**
+   * Annule le dernier patch en restaurant l'état précédent.
+   */
+undo() {
+  if (this.history.length === 0) {
+    showToast("Rien à annuler", 2000);
+    return;
+  }
+  // 1) On dépile l'état précédent
+  const { occupiedChannels, projectorCounters, outputHTML } = this.history.pop();
+
+  // 2) On restaure
+  this.occupiedChannels = occupiedChannels;
+  this.projectorCounters = projectorCounters;
+  this.outputHTML = outputHTML;
+
+  // 3) On met à jour l'affichage et le localStorage
+  document.getElementById('output').innerHTML = this.outputHTML;
+  saveToLocalStorage('dmx_patch_results', this.outputHTML);
+
+  showToast("Dernier patch annulé", 1500);
+
+  // 4) On recalcule la prochaine adresse libre sur l'univers courant
+  this.updateStartAddress();
+  
+}
 
   init() {
 
@@ -46,6 +89,12 @@ export class DMXPatcher {
     this.resBtn = document.getElementById('resultsButton');
     this.navPatchBtn = document.getElementById('show-patch');
     this.navResultsBtn = document.getElementById('show-results');
+    this.undoBtn = document.getElementById('undoButton');
+    this.undoBtn.addEventListener('click', () => this.undo());
+    this.univ = document.getElementById('universe');
+    this.addr = document.getElementById('address');
+
+
     /***********************
      * Navigation entre les sections "Patch" et "Résultats"
      ***********************/
@@ -311,6 +360,11 @@ export class DMXPatcher {
   }
 
   patchProjectors() {
+    // 0️⃣ Sauvegarde pour undo
+    this.saveState();
+    
+  
+
     // Forcer la fermeture des suggestions si encore ouvertes
     document.getElementById('projector-suggestions')?.classList.add('hidden');
 
