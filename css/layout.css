@@ -136,3 +136,41 @@ table th {
 .hidden {
   display: none;
 }
+
+/* Univers affiché en petit et moins visible */
+#results-table .universe.small {
+  font-size: 0.75em;
+  opacity: 0.6;
+  margin-right: 0.1em;
+}
+
+/* Adresse plus mise en valeur (ex : couleur primaire) */
+#results-table .address {
+  font-weight: bold;
+  color: var(--primary-color);
+}
+
+/* Univers en petit (pour start-cell) */
+.universe.small {
+  font-size: 0.75em;
+  opacity: 0.6;
+  margin-right: 0.1em;
+}
+
+/* Adresse de début mise en valeur */
+.address.highlight {
+  font-weight: bold;
+  color: var(--primary-color);
+}
+
+/* Adresse de fin tonale neutre */
+.address.end {
+  font-weight: normal;
+  color: black;
+}
+
+/* Cellules d'adresse (éviter wrapping) */
+.address-cell {
+  white-space: nowrap;
+  padding: 8px 10px;
+}
