@@ -295,3 +295,36 @@ input[type="number"] {
   text-align: left;
   border-bottom: 1px solid #ccc;
 }
+
+
+/* Chevrons grisés par défaut */
+.sort-icon {
+  font-size: 0.75em;
+  margin-left: 0.25em;
+  opacity: 0.3;
+  transition: transform 0.2s, opacity 0.2s;
+}
+
+/* Quand on survole une colonne triable */
+#results-table th:hover .sort-icon {
+  opacity: 0.6;
+}
+
+/* Colonne triée en ordre ascendant */
+#results-table th.sorted-asc .sort-icon {
+  opacity: 1;
+  transform: rotate(180deg); /* fait pointer le chevron vers le haut */
+  color: var(--primary-color);
+}
+
+/* Colonne triée en ordre descendant */
+#results-table th.sorted-desc .sort-icon {
+  opacity: 1;
+  transform: rotate(0deg); /* chevron pointant vers le bas */
+  color: var(--primary-color);
+}
+
+/* Curseur pointer pour indiquer qu'on peut cliquer */
+#results-table th {
+  cursor: pointer;
+}
