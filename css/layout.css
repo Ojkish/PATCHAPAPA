@@ -29,7 +29,7 @@ nav button {
 
 nav button:hover,
 nav button:focus {
-  background: var( rgb(187, 183, 183));
+  background: rgb(187, 183, 183);
   opacity: 0.6;
 }
 
@@ -77,14 +77,53 @@ table {
 
 table th,
 table td {
-  border: 1px solid var(--border-color);
-  padding: 8px;
-  text-align: left;
+
+  white-space: nowrap;            /* Pas de retour à la ligne */
+  overflow: hidden;               /* Cache le dépassement */
+  text-overflow: ellipsis;        /* Ajoute "…" si le texte est trop long */
+  vertical-align: middle;         /* Centre verticalement le contenu */
+  padding: 8px 10px;              /* Renforce l'espacement intérieur */
+  max-width: 180px;               /* Empêche les colonnes de s'étirer à l'infini */
 }
 
 table th {
-  background: #f0f0f0;
-  cursor: pointer;
+
+    white-space: nowrap;
+    padding: 8px 10px;
+    text-align: left;
+}
+
+
+
+/* Étend la zone “main-container” de la section #patch-section */
+#patch-section .main-container {
+  max-width: 95vw;
+  width: auto;
+  padding: 20px 10px;
+}
+
+/* Pour que les résultats dans #output puissent défiler s'ils débordent */
+#patch-section #output {
+
+  display: block;
+  overflow-x: auto;
+  width: 100%;
+  margin-bottom: 20px; /* espace sous le scroll */
+
+}
+
+#patch-section #output .result-item {
+  display: grid;
+  grid-template-columns: 30% 1fr 1fr 1fr; /* Nom / Univers / Début / Fin */
+  column-gap: 10px;
+  align-items: center;
+  padding: 8px 10px;
+  min-height: 40px;      /* hauteur uniforme */
+  min-width: 600px;      /* largeurs cumulées des colonnes */
+  background: #fff;
+  margin-bottom: 5px;
+  border-radius: 4px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
 }
 
 /* Boutons d'export groupés */
@@ -97,4 +136,3 @@ table th {
 .hidden {
   display: none;
 }
-
