@@ -34,7 +34,7 @@ export class DMXPatcher {
     this.resBtn       = document.getElementById('resultsButton');
     this.navPatchBtn  = document.getElementById('show-patch');
     this.navResultsBtn= document.getElementById('show-results');
-
+    this.resBtn.addEventListener('click', () => this.navResultsBtn.click());
     // Navigation
     this.navPatchBtn.addEventListener('click', () => {
       document.getElementById('patch-section').classList.remove('hidden');
