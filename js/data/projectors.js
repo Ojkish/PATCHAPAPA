@@ -245,7 +245,7 @@ export  const projectorLibrary = [
   
 
   // —————————————————————————————————————————————————————
-  // Chauvet / Rogue / Maverick
+  // Chauvet
   // —————————————————————————————————————————————————————
   
   {
@@ -756,6 +756,36 @@ export  const projectorLibrary = [
 
     ]
   },
+
+  // —————————————————————————————————————————————————————
+  // Arri
+  // —————————————————————————————————————————————————————
+  {
+    model: "L5-C Fresnel",
+    brand: "Arri",
+    modes: [
+      { name: "P01: CCT & RGBW 8bit mode", channels: 8 },
+      { name: "P02: CCT 8bit mode", channels: 3 },
+      { name: "P03: CCT & HSI 8bit mode", channels: 6 },
+      { name: "P04: RGBW 8bit mode", channels: 5 },
+      { name: "P05: HSI 8bit mode", channels: 3 },
+      { name: "P06: CCT & RGBW 16bit mode", channels: 16 },
+      { name: "P07: CCT 16bit mode", channels: 6 },
+      { name: "P08: CCT & HSI 16bit mode", channels: 12 },
+      { name: "P09: RGBW 16bit mode", channels: 10 },
+      { name: "P10: HSI 16bit mode", channels: 6 },
+      { name: "P11: CCT & RGBW 8/16bit mode", channels: 14 },
+      { name: "P12: CCT 8/16bit mode", channels: 5 },
+      { name: "P13: CCT & HSI 8/16bit mode", channels: 10 },
+      { name: "P14: RGBW 8/16bit mode", channels: 10 },
+      { name: "P15: HSI 8/16bit mode", channels: 6 },
+      
+    ]
+  },
+
+
+
+
 
 
 
