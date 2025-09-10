@@ -527,6 +527,15 @@ export  const projectorLibrary = [
 
     ]
   },
+  {
+    model: "Proteus Maximus",
+    brand: "Elation",
+    modes: [
+      { name: "Standard", channels: 37 },
+      { name: "Extended", channels: 61 },
+
+    ]
+  },
 
   // —————————————————————————————————————————————————————
   // Vari-Lite
