@@ -37,6 +37,20 @@ export  const projectorLibrary = [
     ]
   },
   {
+    model: "MAC Aura XIP",
+    brand: "Martin",
+    modes: [
+      { name: "Compact", channels: 20 },
+      { name: "Basic", channels: 36 },
+      { name: "Extended", channels: 57 },
+      { name: "Ludicrous", channels: 93 },
+      { name: "Compact Direct", channels: 20 },
+      { name: "XB Standard", channels: 14 },
+      { name: "XB Extended", channels: 25 }
+    ]
+  },
+
+  {
     model: "MAC Quantum Profile",
     brand: "Martin",
     modes: [
@@ -524,15 +538,6 @@ export  const projectorLibrary = [
       { name: "Basic", channels: 19 },
       { name: "Standard", channels: 22 },
       { name: "Extended", channels: 25 },
-
-    ]
-  },
-  {
-    model: "Proteus Maximus",
-    brand: "Elation",
-    modes: [
-      { name: "Standard", channels: 37 },
-      { name: "Extended", channels: 61 },
 
     ]
   },
