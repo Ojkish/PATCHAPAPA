@@ -360,6 +360,29 @@ export  const projectorLibrary = [
      ]
   },
   
+  {
+    model: "Maverick Storm2 Beamwash",
+    brand: "Chauvet",
+    modes: [
+      { name: "Single Control TOUR", channels: 325 },
+      { name: "Single Control ADVANCED", channels: 263 },
+      { name: "Single Control STANDARD", channels: 143 },
+      { name: "Single Control BASIC 2", channels: 37 },
+      { name: "Single Control BASIC", channels: 31 },
+      { name: "Single Control BUSKING", channels: 19 },
+      { name: "Single Control BASIC 3", channels: 37 },
+      { name: "Single Control FULL PIXEL", channels: 324 },
+      { name: "Dual Control Mode Movement ADVANCED", channels: 45 },
+      { name: "Dual Control Mode Movement STANDARD", channels: 34 },
+      { name: "Dual Control Mode Movement BASIC", channels: 11 },
+      { name: "Dual Control Mode Pixel ADVANCED", channels: 224 },
+      { name: "Dual Control Mode Pixel STANDARD", channels: 112 },
+      { name: "Dual Control Mode Pixel BASIC", channels: 93 },
+
+    ]
+  },
+  
+  
   // —————————————————————————————————————————————————————
   // Elation
   // —————————————————————————————————————————————————————
@@ -454,7 +477,7 @@ export  const projectorLibrary = [
       { name: "RGB", channels: 3 },
       { name: "8bit", channels: 4 },
       { name: "16bit", channels: 8 },
-      { name: "16bit Dim", channels: 10 },
+      { name: "16bitDim", channels: 10 },
       { name: "Extended", channels: 16 },
       { name: "Cells", channels: 80 },
       { name: "Cells Dim", channels: 82 },
