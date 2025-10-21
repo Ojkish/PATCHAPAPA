@@ -361,6 +361,25 @@ export  const projectorLibrary = [
   },
   
   {
+    model: "Maverick Force 2 Beamwash",
+    brand: "Chauvet",
+    modes: [
+      { name: "Single Control TOUR", channels: 146 },
+      { name: "Single Control ADVANCED", channels: 122 },
+      { name: "Single Control STANDARD", channels: 68 },
+      { name: "Single Control BASIC 2", channels: 25 },
+      { name: "Single Control BASIC", channels: 20 },
+      { name: "Dual Control Mode Movement ADVANCED", channels: 26 },
+      { name: "Dual Control Mode Movement STANDARD", channels: 20 },
+      { name: "Dual Control Mode Movement BASIC", channels: 8 },
+      { name: "Dual Control Mode Pixel ADVANCED", channels: 96 },
+      { name: "Dual Control Mode Pixel STANDARD", channels: 48 },
+      { name: "Dual Control Mode Pixel BASIC", channels: 36 },
+
+    ]
+  },
+  
+  {
     model: "Maverick Storm2 Beamwash",
     brand: "Chauvet",
     modes: [
@@ -381,8 +400,9 @@ export  const projectorLibrary = [
 
     ]
   },
-  
-  
+
+
+
   // —————————————————————————————————————————————————————
   // Elation
   // —————————————————————————————————————————————————————
