@@ -380,6 +380,18 @@ export  const projectorLibrary = [
   },
   
   {
+    model: "Maverick Force 2 Solowash",
+    brand: "Chauvet",
+    modes: [
+      { name: "27 channels", channels: 27 },
+      { name: "21 channels", channels: 21 },
+
+    ]
+  },
+
+
+
+  {
     model: "Maverick Storm2 Beamwash",
     brand: "Chauvet",
     modes: [
@@ -401,7 +413,26 @@ export  const projectorLibrary = [
     ]
   },
 
+  {
+    model: "Maverick Force X Spot",
+    brand: "Chauvet",
+    modes: [
+      { name: "29 channels", channels: 29 },
+      { name: "22 channels", channels: 22 },
 
+    ]
+  },
+
+  {
+    model: "Maverick Force X Profile",
+    brand: "Chauvet",
+    modes: [
+      { name: "37 channels", channels: 37 },
+      { name: "47 channels", channels: 47 },
+
+    ]
+  },
+  
 
   // —————————————————————————————————————————————————————
   // Elation
