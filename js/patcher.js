@@ -201,61 +201,75 @@ export class DMXPatcher {
   /** Marque les canaux occupés */
   markChannelsAsOccupied(u,s,n){ if(!this.occupiedChannels.has(u)) this.occupiedChannels.set(u,new Set()); const set=this.occupiedChannels.get(u); for(let i=0;i<n;i++) set.add(s+i); }
 
-onProjectorInput() {
-  const term = this.pName.value.trim();
-  const list = document.getElementById('projector-suggestions');
-  const modeGroup = document.getElementById('mode-group');
-  const modeSelect = document.getElementById('modeSelect');
-
-  list.innerHTML = '';
-
-  if (!term) {
-    list.classList.add('hidden');
-    modeGroup.classList.add('hidden'); // Cacher les modes
-    modeSelect.innerHTML = '';          // Vider la liste des modes
-    return;
-  }
-
-  const startsWithFilter = projectorLibrary.filter(p => p.model.toLowerCase().startsWith(term));
-  const includesFilter = projectorLibrary.filter(p => !startsWithFilter.includes(p) && (p.model.toLowerCase().includes(term) || p.brand.toLowerCase().includes(term)));
-  const results = [...startsWithFilter, ...includesFilter];
-
-  if (results.length === 0) {
-    list.classList.add('hidden');
-    modeGroup.classList.add('hidden'); // Pas de correspondance → cacher modes
-    modeSelect.innerHTML = '';
-    return;
-  }
-
-  results.forEach(result => {
-    const model = result.model;
-    const brand = result.brand;
-    let highlightedBrand = brand;
-    let highlightedModel = model;
-
-    // Mettre en évidence les caractères correspondants dans la marque et le modèle
-    const startIndexBrand = brand.toLowerCase().indexOf(term);
-    if (startIndexBrand !== -1) {
-      highlightedBrand = `${brand.slice(0, startIndexBrand)}<strong>${brand.slice(startIndexBrand, startIndexBrand + term.length)}</strong>${brand.slice(startIndexBrand + term.length)}`;
+    onProjectorInput() {
+      const term = this.pName.value.trim();
+      const list = document.getElementById('projector-suggestions');
+      const modeGroup = document.getElementById('mode-group');
+      const modeSelect = document.getElementById('modeSelect');
+    
+      list.innerHTML = '';
+    
+      if (!term) {
+        list.classList.add('hidden');
+        modeGroup.classList.add('hidden');  // Cacher les modes
+        modeSelect.innerHTML = '';          // Vider la liste des modes
+        return;
+      }
+    
+      const results = this.fuse.search(term);
+    
+      if (results.length === 0) {
+        list.classList.add('hidden');
+        modeGroup.classList.add('hidden');  // Pas de correspondance → cacher modes
+        modeSelect.innerHTML = '';
+        return;
+      }
+    
+      // Vérifier si le terme correspond exactement à un modèle
+      const exactMatch = projectorLibrary.find(p => p.model.toLowerCase() === term.toLowerCase());
+      if (!exactMatch) {
+        modeGroup.classList.add('hidden');
+        modeSelect.innerHTML = '';
+      }
+    
+      results.forEach(result => {
+        const model = result.item.model;
+        const brand = result.item.brand;
+    
+        let highlightedBrand = brand;
+        let highlightedModel = model;
+    
+        if (result.matches) {
+          result.matches.forEach(match => {
+            const value = match.value;
+            let highlighted = '';
+            let lastIndex = 0;
+    
+            match.indices.forEach(([start, end]) => {
+              highlighted += value.slice(lastIndex, start);
+              highlighted += '<strong>' + value.slice(start, end + 1) + '</strong>';
+              lastIndex = end + 1;
+            });
+            highlighted += value.slice(lastIndex);
+    
+            if (match.key === 'brand') highlightedBrand = highlighted;
+            if (match.key === 'model') highlightedModel = highlighted;
+          });
+        }
+    
+        const li = document.createElement('li');
+        li.innerHTML = `${highlightedBrand} ${highlightedModel}`;
+        li.addEventListener('click', () => {
+          this.pName.value = model; // Remplit avec le modèle uniquement
+          list.classList.add('hidden');
+          this.populateModes(model);
+        });
+        list.appendChild(li);
+      });
+    
+      list.classList.remove('hidden');
     }
-
-    const startIndexModel = model.toLowerCase().indexOf(term);
-    if (startIndexModel !== -1) {
-      highlightedModel = `${model.slice(0, startIndexModel)}<strong>${model.slice(startIndexModel, startIndexModel + term.length)}</strong>${model.slice(startIndexModel + term.length)}`;
-    }
-
-    const li = document.createElement('li');
-    li.innerHTML = `${highlightedBrand} ${highlightedModel}`;
-    li.addEventListener('click', () => {
-      this.pName.value = model; // Remplit avec le modèle uniquement
-      list.classList.add('hidden');
-      this.populateModes(model);
-    });
-    list.appendChild(li);
-  });
-
-  list.classList.remove('hidden');
-}
+    
 
     checkIfValidProjectorName() {
       const input = this.pName.value.trim().toLowerCase();
