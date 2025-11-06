@@ -59,6 +59,7 @@ export class DMXPatcher {
     // Autocomplete Projector
     const fuseOpts = { 
       keys: ['model','brand'], 
+      useExtendedSearch: true,
       threshold:0.5, 
       includeMatches:true, 
       minMatchCharLength:1, 
@@ -69,6 +70,31 @@ export class DMXPatcher {
     this.pName.addEventListener('keydown', e => this.onProjectorKeyDown(e));
     this.pName.addEventListener('blur', () => setTimeout(() => document.getElementById('projector-suggestions')?.classList.add('hidden'),150));
 
+// Fonction de recherche appelée lors de la saisie utilisateur
+function searchProjectors(query) {
+  if (!query) {
+    // Si la requête est vide, on retourne la liste complète
+    return projectors;
+  }
+  // On divise la requête en mots, on ajoute '^' devant chaque mot pour forcer le préfixe.
+  const tokens = query.split(/\s+/).filter(Boolean);
+  const fuseQuery = tokens.map(token => `^${token}`).join(' ');
+  // On exécute la recherche avec Fuse.js
+  const results = fuse.search(fuseQuery);
+  // Fuse.js retourne des objets avec {item, score}, on extrait les items
+  return results.map(result => result.item);
+}
+
+// Exemple d'utilisation : récupération des résultats
+const inputField = document.getElementById("search-input");
+inputField.addEventListener("input", function() {
+  const query = inputField.value.trim();
+  const filteredProjectors = searchProjectors(query);
+  // mettre à jour l'affichage avec filteredProjectors...
+  console.log(filteredProjectors);
+});
+
+    
     // Universe change
     this.univ.addEventListener('change', () => this.updateStartAddress());
 
