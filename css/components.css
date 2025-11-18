@@ -374,3 +374,84 @@ input[type="number"] {
     z-index: 1001 !important;
   }
 }
+/* === Ajustement de la taille de la section Patch DMX === */
+
+/* Réduction de la largeur maximale de la section patch pour correspondre à celle des résultats */
+#patch-section .main-container {
+  max-width: 500px;
+  margin: 0 auto 20px;
+  padding: 20px;
+  background: var(--container-bg);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+}
+
+/* Ajustement du conteneur principal pour uniformité */
+.main-container {
+  max-width: 500px;
+  margin: 0 auto 20px;
+  padding: 20px;
+  background: var(--container-bg);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+}
+
+/* Ajustement des éléments de formulaire */
+#patch-section .form-group {
+  margin-bottom: 20px;
+}
+
+/* Ajustement des boutons */
+#patch-section .action-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 30px;
+}
+
+/* Ajustement des champs de saisie */
+#patch-section input[type="number"] {
+  width: 100%;
+  max-width: 100px;
+  text-align: center;
+}
+
+/* Ajustement du conteneur des boutons numériques */
+#patch-section .number-input-container {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  justify-content: center;
+}
+
+/* Ajustement des suggestions */
+#patch-section .suggestions {
+  max-width: 100%;
+}
+
+/* === Ajustement de la largeur des champs de recherche === */
+#patch-section .form-group {
+  margin-bottom: 20px;
+}
+
+/* Ajustement pour que les champs prennent toute la largeur du conteneur */
+#patch-section .form-group input[type="text"] {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* Ajustement du conteneur de saisie pour que les boutons + et - restent à côté */
+#patch-section .number-input-container {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  width: 100%;
+  max-width: 100%;
+}
+
+/* Ajustement du conteneur de saisie pour qu'il prenne toute la largeur */
+#patch-section .number-input-container input {
+  flex: 1;
+  width: 100%;
+  max-width: none;
+}
