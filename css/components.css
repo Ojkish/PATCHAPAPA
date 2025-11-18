@@ -473,13 +473,7 @@ table th {
     margin: 0 !important;
   }
 
-  /* Assure que le champ de saisie reste visible */
-  #patch-section .form-group {
-    position: relative;
-    z-index: 1001 !important;
-  }
-
-  /* Ajuste la hauteur disponible pour le contenu */
+  /* Réduit la hauteur disponible pour le contenu */
   #patch-section {
     padding-bottom: 200px !important;
   }
@@ -492,16 +486,5 @@ table th {
   /* Ajuste la hauteur du conteneur principal */
   #patch-section .main-container {
     padding-bottom: 100px;
-  }
-
-  /* Force le champ de saisie à rester au premier plan */
-  #projectorName {
-    position: fixed !important;
-    top: 80px !important;
-    left: 10px !important;
-    right: 10px !important;
-    z-index: 1002 !important;
-    background: white !important;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1) !important;
   }
 }
