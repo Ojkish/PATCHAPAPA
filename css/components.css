@@ -931,7 +931,13 @@ table th {
     margin: 0 !important;
   }
 
-  /* Réduit la hauteur disponible pour le contenu */
+  /* Assure que le champ de saisie reste visible */
+  #patch-section .form-group {
+    position: relative;
+    z-index: 1001 !important;
+  }
+
+  /* Ajuste la hauteur disponible pour le contenu */
   #patch-section {
     padding-bottom: 200px !important;
   }
