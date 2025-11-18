@@ -456,54 +456,35 @@ table th {
   max-width: none;
 }
 
-/* === Correction de la visibilité sur mobile - champ en haut de la liste === */
+/* === Correction du problème de clavier mobile === */
 @media (max-width: 768px) {
-  /* Position fixe pour le champ de recherche sur mobile */
-  #patch-section .form-group {
-    position: sticky;
-    top: 0;
-    background: white;
-    z-index: 1002;
-    padding: 10px;
-    margin-bottom: 10px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    border-bottom: 1px solid var(--border-color);
-  }
-
-  #patch-section .form-group input[type="text"] {
-    position: static;
-    background: white;
-    z-index: 1003;
-    box-shadow: none;
-    border: 1px solid var(--border-color);
-    width: 100%;
-  }
-
-  /* Correction de la position des suggestions sur mobile */
-  #patch-section .suggestions {
-    position: relative !important;
-    top: 0 !important;
-    left: 0 !important;
-    right: 0 !important;
+  /* Ajuste la position des suggestions quand le clavier apparaît */
+  #projector-suggestions {
+    position: fixed !important;
+    top: 100px !important;
+    left: 10px !important;
+    right: 10px !important;
     max-height: 200px !important;
-    z-index: 1001 !important;
+    z-index: 1000 !important;
     background: white !important;
     box-shadow: 0 4px 6px rgba(0,0,0,0.1) !important;
     border-radius: 4px !important;
     padding: 0 !important;
     margin: 0 !important;
-    width: 100%;
-    border-top: none;
-    border-bottom: 1px solid var(--border-color);
   }
 
-  /* Ajustement du conteneur principal */
-  #patch-section .main-container {
-    padding-bottom: 250px !important;
+  /* Réduit la hauteur disponible pour le contenu */
+  #patch-section {
+    padding-bottom: 200px !important;
   }
-  
-  /* Ajustement de la hauteur du champ de recherche */
-  #patch-section .form-group {
-    margin-bottom: 15px;
+
+  /* Permet le scroll automatique vers le champ actif */
+  .form-group {
+    position: relative;
+  }
+
+  /* Ajuste la hauteur du conteneur principal */
+  #patch-section .main-container {
+    padding-bottom: 100px;
   }
 }
