@@ -341,6 +341,7 @@ h1 {
 /* Espacement des groupes de formulaire */
 .form-group {
   margin-bottom: 20px;
+  position: relative;
 }
 
 /* Alignement des conteneurs numériques et selects */
