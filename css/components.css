@@ -914,10 +914,25 @@ table th {
   max-width: none;
 }
 
-/* === Correction du problème de clavier mobile === */
+/* === Correction de la visibilité sur mobile === */
 @media (max-width: 768px) {
-  /* Ajuste la position des suggestions quand le clavier apparaît */
-  #projector-suggestions {
+  /* Assurez-vous que le conteneur du champ de recherche reste au-dessus */
+  #patch-section .form-group {
+    position: relative;
+    z-index: 1001; /* Plus haut que les suggestions */
+  }
+
+  /* Position fixe pour le champ de recherche sur mobile */
+  #patch-section .form-group input[type="text"] {
+    position: sticky;
+    top: 0;
+    background: white; /* Pour éviter le fond transparent */
+    z-index: 1002;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  }
+
+  /* Correction de la position des suggestions sur mobile */
+  #patch-section .suggestions {
     position: fixed !important;
     top: 100px !important;
     left: 10px !important;
@@ -931,18 +946,8 @@ table th {
     margin: 0 !important;
   }
 
-  /* Réduit la hauteur disponible pour le contenu */
-  #patch-section {
-    padding-bottom: 200px !important;
-  }
-
-  /* Permet le scroll automatique vers le champ actif */
-  .form-group {
-    position: relative;
-  }
-
-  /* Ajuste la hauteur du conteneur principal */
+  /* Ajustement du conteneur principal */
   #patch-section .main-container {
-    padding-bottom: 100px;
+    padding-bottom: 250px !important;
   }
 }
