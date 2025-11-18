@@ -46,14 +46,13 @@ input[type="number"] {
   flex-direction: column;
   gap: 10px;
   margin-top: 30px;
-
 }
 
 /* Styles des boutons d'action principaux */
 .action-button {
-  display: flex;                /* Ajouté : permet l'usage de flexbox */
-  align-items: center;          /* Centre verticalement le contenu */
-  justify-content: center;      /* Centre horizontalement le contenu */
+  display: flex;
+  align-items: center;
+  justify-content: center;
   padding: 15px;
   font-size: 1.1rem;
   font-weight: 500;
@@ -62,7 +61,7 @@ input[type="number"] {
   border: none;
   cursor: pointer;
   transition: opacity 0.2s;
-  text-align: center;           /* S'assure que le texte dans le bouton est centré */
+  text-align: center;
 }
 
 .action-button.primary {
@@ -83,18 +82,16 @@ input[type="number"] {
 /* Styles pour les items individuels de résultat (Affichage patch) */
 #patch-section #output .result-item {
   display: grid;
-  grid-template-columns: 30% 1fr 1fr 1fr; /* ajuste les proportions : Nom / Univers / Début / Fin */
+  grid-template-columns: 30% 1fr 1fr 1fr;
   column-gap: 10px;
   align-items: center;
   padding: 8px 10px;
-  min-height: 40px;      /* même hauteur pour toutes les lignes */
+  min-height: 40px;
   background: #fff;
   margin-bottom: 5px;
   border-radius: 4px;
   box-shadow: 0 1px 3px rgba(0,0,0,0.1);
 }
-
-
 
 .result-item .address-start {
   color: var(--primary-color);
@@ -108,8 +105,8 @@ input[type="number"] {
 /* boutons export et mail cote a cote dans boite */
 .buttons-container {
   display: flex;
-  gap: 1rem; /* espace entre les boutons */
-}  
+  gap: 1rem;
+}
 
 /* Styles du conteneur de filtrage dans la section résultats */
 .filter-container {
@@ -151,12 +148,12 @@ input[type="number"] {
 /* Suggestions sous l’input de recherche */
 .suggestions {
   position: absolute;
-  top: 100%;      /* juste en dessous de l’input */
+  top: 100%;
   left: 0;
   right: 0;
   background: #fff;
   border: 1px solid var(--border-color);
-  max-height: 200px;    /* scroll si trop de suggestions */
+  max-height: 200px;
   overflow-y: auto;
   margin: 0;
   padding: 0;
@@ -217,54 +214,10 @@ input[type="number"] {
 /* mise en valeur de l'adresse de debut dans l'adresse de resultats*/
 #results-table td:nth-child(3),
 #results-table th:nth-child(3) {
-  /*background-color: #f4eabf; Light yellow background*/
   font-weight: bold;
   color: #4438e9;
 }
 
-/* 1. Autorise le scroll horizontal DANS la zone grise */
-#results-section .main-container {
-  overflow-x: auto;
-  /* gère le padding latéral si tu veux */
-  padding: 20px 10px;
-}
-
-/* 2. Fais en sorte que la table prenne sa largeur naturelle */
-#results-section .main-container table {
-  width: max-content;   /* s’adapte à la somme des colonnes */
-  min-width: 100%;      /* au moins la largeur du conteneur */
-  border-collapse: collapse;
-}
-
-/* 3. (Optionnel) Ajuste la hauteur et styles existants */
-#results-section .main-container table th,
-#results-section .main-container table td {
-  padding: 8px 10px;
-  white-space: nowrap;
-  text-align: left;
-}
-
-/* 1. Autorise le scroll horizontal DANS la zone grise */
-#results-section .main-container {
-  overflow-x: auto;
-  /* gère le padding latéral si tu veux */
-  padding: 20px 10px;
-}
-
-/* 2. Fais en sorte que la table prenne sa largeur naturelle */
-#results-section .main-container table {
-  width: max-content;   /* s’adapte à la somme des colonnes */
-  min-width: 100%;      /* au moins la largeur du conteneur */
-  border-collapse: collapse;
-}
-
-/* 3. (Optionnel) Ajuste la hauteur et styles existants */
-#results-section .main-container table th,
-#results-section .main-container table td {
-  padding: 8px 10px;
-  white-space: nowrap;
-  text-align: left;
-}
 /* === Scroll uniquement sur le tableau de la page Résultats === */
 
 /* 1) On retire tout scroll horizontal de .main-container */
@@ -274,16 +227,16 @@ input[type="number"] {
 
 /* 2) On encapsule le scroll DANS .results-scroll */
 #results-section .results-scroll {
-  display: block;       /* pour que overflow soit pris en compte */
-  overflow-x: auto;     /* scroll horizontal si le tableau est trop large */
-  width: 100%;          /* prend toute la largeur disponible */
+  display: block;
+  overflow-x: auto;
+  width: 100%;
 }
 
 /* 3) On force la table à prendre sa largeur naturelle */
 #results-section .results-scroll table {
-  display: block;       /* idem : le block permet le scroll */
-  width: max-content;   /* s’adapte à la somme des colonnes */
-  min-width: 100%;      /* au moins la largeur du conteneur parent */
+  display: block;
+  width: max-content;
+  min-width: 100%;
   border-collapse: collapse;
 }
 
@@ -295,7 +248,6 @@ input[type="number"] {
   text-align: left;
   border-bottom: 1px solid #ccc;
 }
-
 
 /* Chevrons grisés par défaut */
 .sort-icon {
@@ -313,18 +265,226 @@ input[type="number"] {
 /* Colonne triée en ordre ascendant */
 #results-table th.sorted-asc .sort-icon {
   opacity: 1;
-  transform: rotate(180deg); /* fait pointer le chevron vers le haut */
+  transform: rotate(180deg);
   color: var(--primary-color);
 }
 
 /* Colonne triée en ordre descendant */
 #results-table th.sorted-desc .sort-icon {
   opacity: 1;
-  transform: rotate(0deg); /* chevron pointant vers le bas */
+  transform: rotate(0deg);
   color: var(--primary-color);
 }
 
 /* Curseur pointer pour indiquer qu'on peut cliquer */
 #results-table th {
   cursor: pointer;
+}
+
+/* layout.css */
+
+/* Structure générale de la page */
+body {
+  font-family: var(--font-family);
+  margin: 20px;
+  background: var(--background-color);
+  line-height: 1.6;
+}
+
+/* Barre de navigation principale */
+nav {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+/* Boutons de navigation */
+nav button {
+  margin: 0 5px;
+  padding: 10px 15px;
+  font-size: 1rem;
+  cursor: pointer;
+  border: 1px solid var(--border-color);
+  background: var(--primary-color);
+  color: #fff;
+  border-radius: 4px;
+  transition: background 0.2s, opacity 0.2s;
+}
+
+nav button:hover,
+nav button:focus {
+  background: rgb(187, 183, 183);
+  opacity: 0.6;
+}
+
+nav button.active {
+  background: var(--secondary-color);
+}
+
+/* Conteneur principal des sections */
+.main-container {
+  max-width: 500px;
+  margin: 0 auto 20px;
+  padding: 20px;
+  background: var(--container-bg);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+}
+
+/* Titres de section */
+h1 {
+  text-align: center;
+  color: var(--text-color);
+  margin-bottom: 30px;
+  font-size: 2em;
+}
+
+/* Espacement des groupes de formulaire */
+.form-group {
+  margin-bottom: 20px;
+}
+
+/* Alignement des conteneurs numériques et selects */
+.number-input-container,
+.mode-select-container {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+/* Mise en page du tableau de résultats */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+}
+
+table th,
+table td {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  vertical-align: middle;
+  padding: 8px 10px;
+  max-width: 180px;
+}
+
+table th {
+  white-space: nowrap;
+  padding: 8px 10px;
+  text-align: left;
+}
+
+/* === Ajustement de la taille de la section Patch DMX === */
+
+/* Réduction de la largeur maximale de la section patch pour correspondre à celle des résultats */
+#patch-section .main-container {
+  max-width: 500px;
+  margin: 0 auto 20px;
+  padding: 20px;
+  background: var(--container-bg);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+}
+
+/* Ajustement du conteneur principal pour uniformité */
+.main-container {
+  max-width: 500px;
+  margin: 0 auto 20px;
+  padding: 20px;
+  background: var(--container-bg);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+}
+
+/* Ajustement des éléments de formulaire */
+#patch-section .form-group {
+  margin-bottom: 20px;
+}
+
+/* Ajustement des boutons */
+#patch-section .action-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 30px;
+}
+
+/* Ajustement des champs de saisie */
+#patch-section input[type="number"] {
+  width: 100%;
+  max-width: 100px;
+  text-align: center;
+}
+
+/* Ajustement du conteneur des boutons numériques */
+#patch-section .number-input-container {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  justify-content: center;
+}
+
+/* Ajustement des suggestions */
+#patch-section .suggestions {
+  max-width: 100%;
+}
+
+/* === Ajustement de la largeur des champs de recherche === */
+#patch-section .form-group {
+  margin-bottom: 20px;
+}
+
+/* Ajustement pour que les champs prennent toute la largeur du conteneur */
+#patch-section .form-group input[type="text"] {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* Ajustement du conteneur de saisie pour que les boutons + et - restent à côté */
+#patch-section .number-input-container {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  width: 100%;
+  max-width: 100%;
+}
+
+/* Ajustement du conteneur de saisie pour qu'il prenne toute la largeur */
+#patch-section .number-input-container input {
+  flex: 1;
+  width: 100%;
+  max-width: none;
+}
+
+/* === Correction du problème de clavier mobile === */
+@media (max-width: 768px) {
+  /* Ajuste la position des suggestions quand le clavier apparaît */
+  #projector-suggestions {
+    position: fixed !important;
+    top: 100px !important;
+    left: 10px !important;
+    right: 10px !important;
+    max-height: 200px !important;
+    z-index: 1000 !important;
+    background: white !important;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1) !important;
+    border-radius: 4px !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+
+  /* Réduit la hauteur disponible pour le contenu */
+  #patch-section {
+    padding-bottom: 200px !important;
+  }
+
+  /* Permet le scroll automatique vers le champ actif */
+  .form-group {
+    position: relative;
+  }
+
+  /* Ajuste la hauteur du conteneur principal */
+  #patch-section .main-container {
+    padding-bottom: 100px;
+  }
 }
