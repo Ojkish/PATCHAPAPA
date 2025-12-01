@@ -821,7 +821,18 @@ export  const projectorLibrary = [
       { name: "Ext", channels: 65 }
     ]
   },
- // —————————————————————————————————————————————————————
+  {
+    model: "COBRA",
+    brand: "Ayrton",
+    modes: [
+      { name: "Basic", channels: 33 },
+      { name: "Std", channels: 35 },
+      { name: "Ext", channels: 45 }
+    ]
+  },
+
+
+  // —————————————————————————————————————————————————————
   // Starway
   // —————————————————————————————————————————————————————
   {
