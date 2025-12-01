@@ -614,6 +614,16 @@ export  const projectorLibrary = [
 
     ]
   },
+  {
+    model: "CHORUS LINE 16",
+    brand: "Elation",
+    modes: [
+      { name: "Basic", channels: 16 },
+      { name: "Standard", channels: 18 },
+      { name: "Extended", channels: 78 },
+
+    ]
+  },
 
   // —————————————————————————————————————————————————————
   // Vari-Lite
