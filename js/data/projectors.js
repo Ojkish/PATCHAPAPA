@@ -771,6 +771,18 @@ export  const projectorLibrary = [
       { name: "12-ch", channels: 12 }
     ]
   },
+  {
+    model: "JDC1",
+    brand: "GLP",
+    modes: [
+      { name: "mode 1 Compress Pro", channels: 14 },
+      { name: "mode 2 Normal", channels: 23 },
+      { name: "mode 3 SPix", channels: 68 },
+      { name: "mode 4 SPix Pro", channels: 62 },
+      { name: "mode 5 1Pix Pro", channels: 17 },
+      { name: "mode 6 Easy", channels: 11 },
+   ]
+  },
 
 
   // —————————————————————————————————————————————————————
