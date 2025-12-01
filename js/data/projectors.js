@@ -164,6 +164,14 @@ export  const projectorLibrary = [
     ]
   },
   {
+    model: "BMFL Blade",
+    brand: "Robe",
+    modes: [
+      { name: "Mode 1", channels: 49 },
+      { name: "Mode 2", channels: 42 }
+    ]
+  },
+  {
     model: "BMFL Wash",
     brand: "Robe",
     modes: [
