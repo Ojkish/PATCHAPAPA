@@ -480,12 +480,11 @@ export  const projectorLibrary = [
     ]
   },
   {
-    model: "Proteus Hybrid",
+    model: "Proteus Maximus",
     brand: "Elation",
     modes: [
-      { name: "Basic", channels: 24 },
-      { name: "Standard", channels: 26 },
-      { name: "Extended", channels: 37 }
+      { name: "Standard", channels: 37 },
+      { name: "Extended", channels: 61 }
     ]
   },
   {
