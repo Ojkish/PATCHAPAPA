@@ -993,7 +993,19 @@ export  const projectorLibrary = [
       { name: "Basic", channels: 16 },
       { name: "Extended", channels: 28 }
     ]
-  }
+  },
+  {
+    model: "Mini B",
+    brand: "CLAY PAKY",
+    modes: [
+      { name: "Basic RGBW", channels: 17 },
+      { name: "Basic RGBW 16bit", channels: 21 },
+      { name: "Extended RGBW", channels: 21 },
+      { name: "Extended RGBW 16bit", channels: 29 },
+
+    ]
+  },
+
 
 ];
 
