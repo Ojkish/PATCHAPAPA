@@ -265,6 +265,15 @@ export  const projectorLibrary = [
     ]
   },
   
+  {
+    model: "Robin Painte",
+    brand: "Robe",
+    modes: [
+      { name: "Mode 1", channels: 44 },
+      { name: "Mode 2", channels: 45 }
+    ]
+  },
+
 
   // —————————————————————————————————————————————————————
   // Chauvet
