@@ -919,6 +919,21 @@ export  const projectorLibrary = [
       
     ]
   },
+  // —————————————————————————————————————————————————————
+  // Entec
+  // —————————————————————————————————————————————————————
+  {
+    model: "Sunstrip LED",
+    brand: "Entec",
+    modes: [
+      { name: "1 ch", channels: 1 },
+      { name: "2 ch", channels: 2 },
+      { name: "3 ch", channels: 3 },
+      { name: "10 ch", channels: 10 },
+      { name: "20 ch", channels: 20 },
+      
+    ]
+  },
 
 
 
