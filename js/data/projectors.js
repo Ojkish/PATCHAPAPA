@@ -80,7 +80,7 @@ export  const projectorLibrary = [
     brand: "Martin",
     modes: [
       { name: "16-bit Basic", channels: 26 },
-      { name: "16-bit Extended", channels: 29 }
+      { name: "16-bit Extended", channels: 34 }
     ]
   },
   {
