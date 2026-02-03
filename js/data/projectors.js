@@ -935,7 +935,16 @@ export  const projectorLibrary = [
     ]
   },
 
-
+  // —————————————————————————————————————————————————————
+  // JB Lighting  // —————————————————————————————————————————————————————
+  {
+    model: "M18 Profile",
+    brand: "JB Lighting",
+    modes: [
+      { name: "M1", channels: 47 },
+      { name: "M2", channels: 70 },
+    ]
+  },
 
 
 
