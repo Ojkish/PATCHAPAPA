@@ -704,6 +704,16 @@ export  const projectorLibrary = [
     ]
   },
 
+    {
+    model: "Platinum Beam 5R Extreme",
+    brand: "Elation",
+    modes: [
+      { name: "Basic", channels: 12 },
+      { name: "Standard", channels: 14 },
+      { name: "Extended", channels: 18 }
+    ]
+  },
+
   // —————————————————————————————————————————————————————
   // Vari-Lite
   // —————————————————————————————————————————————————————
@@ -749,14 +759,14 @@ export  const projectorLibrary = [
   },
 
   {
-    model: "Platinum Beam 5R Extreme",
-    brand: "Elation",
+    model: "VL4000 Spot",
+    brand: "Vari-Lite",
     modes: [
-      { name: "Basic", channels: 12 },
-      { name: "Standard", channels: 14 },
-      { name: "Extended", channels: 18 }
+      { name: "16-Bit", channels: 52 },
+      { name: "16-Bit Enhanced", channels: 57 }
     ]
   },
+
 
   // —————————————————————————————————————————————————————
   // ETC (Electronic Theatre Controls)
