@@ -1139,6 +1139,17 @@ export  const projectorLibrary = [
     ]
   },
 
+  {
+    model: "A.leda B-EYE K20",
+    brand: "Clay Paky",
+    modes: [
+      { name: "Standard", channels: 21 },
+      { name: "Shapes", channels: 35 },
+      { name: "Pixel RGB", channels: 111 },
+      { name: "Pixel RGBW", channels: 148 }
+    ]
+  },
+
 ];
 
 /**
