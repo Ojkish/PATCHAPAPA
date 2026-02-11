@@ -135,6 +135,14 @@ export  const projectorLibrary = [
     ]
   },
 
+{
+    model: "RUSH MH 3 Beam",
+    brand: "Martin",
+    modes: [
+      { name: "19-ch", channels: 19 }
+    ]
+  },
+
   // —————————————————————————————————————————————————————
   // Robe
   // —————————————————————————————————————————————————————
