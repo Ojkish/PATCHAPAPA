@@ -894,6 +894,22 @@ export  const projectorLibrary = [
     ]
   },
 
+  {
+    model: "Stormlite",
+    brand: "Starway",
+    modes: [
+      { name: "17-ch", channels: 17 },
+      { name: "14-ch", channels: 14 },
+      { name: "9-ch", channels: 9 },
+      { name: "8-ch", channels: 8 },
+      { name: "4-ch", channels: 4 },
+      { name: "3-ch", channels: 3 },
+      { name: "1-ch", channels: 1 }
+
+    ]
+  },
+
+
   // —————————————————————————————————————————————————————
   // Arri
   // —————————————————————————————————————————————————————
