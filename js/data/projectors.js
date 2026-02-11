@@ -911,6 +911,16 @@ export  const projectorLibrary = [
     ]
   },
 
+{
+    model: "WildSun-S25",
+    brand: "Ayrton",
+    modes: [
+      { name: "Standard", channels: 14 },
+      { name: "Basic", channels: 22 },
+      { name: "Extended", channels: 64 }
+    ]
+  },
+
 
   // —————————————————————————————————————————————————————
   // Starway
