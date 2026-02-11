@@ -153,6 +153,14 @@ export  const projectorLibrary = [
     ]
   },
 
+  {
+    model: "RUSH MH 6 Wash",
+    brand: "Martin",
+    modes: [
+      { name: "Standard", channels: 14 }
+    ]
+  },
+
   // —————————————————————————————————————————————————————
   // Robe
   // —————————————————————————————————————————————————————
