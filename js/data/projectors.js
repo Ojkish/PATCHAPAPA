@@ -376,7 +376,22 @@ export  const projectorLibrary = [
       { name: "1Ch", channels: 1 },
      ]
   },
-  
+ 
+    {
+    model: "Strike2 Array",
+    brand: "Chauvet",
+    modes: [
+      { name: "9Ch", channels: 9 },
+      { name: "8Ch", channels: 8 },
+      { name: "5Ch", channels: 5 },
+      { name: "4Ch", channels: 4 },
+      { name: "3Ch", channels: 3 },
+      { name: "2Ch", channels: 2 },
+      { name: "1Ch", channels: 1 },
+     ]
+  },
+
+
   {
     model: "Maverick Force 2 Beamwash",
     brand: "Chauvet",
