@@ -529,6 +529,17 @@ export  const projectorLibrary = [
       { name: "Extended", channels: 61 }
     ]
   },
+
+{
+    model: "Proteus Hybrid",
+    brand: "Elation",
+    modes: [
+      { name: "Basic", channels: 24 },
+      { name: "Standard", channels: 26 },
+      { name: "Extended", channels: 37 }
+    ]
+  },
+
   {
     model: "Platinum Beam 5R",
     brand: "Elation",
