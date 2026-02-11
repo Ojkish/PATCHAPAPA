@@ -83,6 +83,16 @@ export  const projectorLibrary = [
       { name: "16-bit Extended", channels: 34 }
     ]
   },
+
+{
+    model: "MAC Viper Performance",
+    brand: "Martin",
+    modes: [
+      { name: "16-bit", channels: 32 },
+      { name: "16-bit Extended", channels: 40 }
+    ]
+  },
+
   {
     model: "MAC Viper AirFX",
     brand: "Martin",
