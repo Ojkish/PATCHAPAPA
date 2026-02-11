@@ -711,6 +711,15 @@ export  const projectorLibrary = [
     ]
   },
 
+  {
+    model: "Platinum Beam 5R Extreme",
+    brand: "Elation",
+    modes: [
+      { name: "Basic", channels: 12 },
+      { name: "Standard", channels: 14 },
+      { name: "Extended", channels: 18 }
+    ]
+  },
 
   // —————————————————————————————————————————————————————
   // ETC (Electronic Theatre Controls)
