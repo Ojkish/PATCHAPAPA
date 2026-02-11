@@ -1099,6 +1099,14 @@ export  const projectorLibrary = [
     ]
   },
 
+  {
+    model: "Alpha Profile 1500",
+    brand: "Clay Paky",
+    modes: [
+      { name: "Standard", channels: 39 },
+      { name: "Vector", channels: 43 }
+    ]
+  },
 
 ];
 
