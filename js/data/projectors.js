@@ -179,6 +179,16 @@ export  const projectorLibrary = [
       { name: "Mode 2", channels: 21 }
     ]
   },
+
+{
+    model: "BMFL WashBeam",
+    brand: "Robe",
+    modes: [
+      { name: "Mode 1", channels: 48 },
+      { name: "Mode 2", channels: 41 }
+    ]
+  },
+
   {
     model: "Spiider",
     brand: "Robe",
