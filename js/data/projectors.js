@@ -1150,6 +1150,16 @@ export  const projectorLibrary = [
     ]
   },
 
+  {
+    model: "WildSun-K25",
+    brand: "Ayrton",
+    modes: [
+      { name: "Standard", channels: 14 },
+      { name: "Basic", channels: 11 },
+      { name: "Extended", channels: 21 }
+    ]
+  },
+
 ];
 
 /**
