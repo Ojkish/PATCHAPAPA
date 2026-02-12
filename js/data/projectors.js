@@ -187,6 +187,14 @@ export  const projectorLibrary = [
     ]
   },
 
+  {
+    model: "MAC Ultra Wash",
+    brand: "Martin",
+    modes: [
+      { name: "29 ch", channels: 29 }
+    ]
+  },
+
   // —————————————————————————————————————————————————————
   // Robe
   // —————————————————————————————————————————————————————
