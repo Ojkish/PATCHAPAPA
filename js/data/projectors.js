@@ -545,6 +545,18 @@ export  const projectorLibrary = [
     ]
   },
 
+  {
+    model: "Maverick Silens 2X Profile",
+    brand: "Chauvet Professional",
+    modes: [
+      { name: "32 ch", channels: 32 },
+      { name: "33 ch", channels: 33 },
+      { name: "41 ch", channels: 41 },
+      { name: "42 ch", channels: 42 }
+    ]
+  },
+
+
   // —————————————————————————————————————————————————————
   // Elation
   // —————————————————————————————————————————————————————
