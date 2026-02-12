@@ -171,6 +171,14 @@ export  const projectorLibrary = [
     ]
   },
 
+{
+    model: "ERA 600 Performance",
+    brand: "Martin",
+    modes: [
+      { name: "35 ch", channels: 35 }
+    ]
+  },
+
   // —————————————————————————————————————————————————————
   // Robe
   // —————————————————————————————————————————————————————
