@@ -501,6 +501,22 @@ export  const projectorLibrary = [
     ]
   },
   
+{
+    model: "Maverick Storm 3 Profile",
+    brand: "Chauvet Professional",
+    modes: [
+      { name: "34 ch", channels: 34 },
+      { name: "50 ch", channels: 50 }
+    ]
+  },
+
+{
+    model: "Maverick Storm 1 Flex",
+    brand: "Chauvet Professional",
+    modes: [
+      { name: "33 ch", channels: 33 },
+    ]
+  },
 
   // —————————————————————————————————————————————————————
   // Elation
@@ -879,7 +895,7 @@ export  const projectorLibrary = [
       { name: "mode 4 SPix Pro", channels: 62 },
       { name: "mode 5 1Pix Pro", channels: 17 },
       { name: "mode 6 Easy", channels: 11 },
-   ]
+  ]
   },
 
 
