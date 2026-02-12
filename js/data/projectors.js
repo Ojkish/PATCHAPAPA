@@ -171,6 +171,14 @@ export  const projectorLibrary = [
     ]
   },
 
+  {
+    model: "MAC Encore Wash",
+    brand: "Martin",
+    modes: [
+      { name: "24 ch", channels: 24 }
+    ]
+  },
+
 {
     model: "ERA 600 Performance",
     brand: "Martin",
