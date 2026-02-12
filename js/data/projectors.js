@@ -460,7 +460,7 @@ export  const projectorLibrary = [
       { name: "ARC1 + D", channels: 4 },
       { name: "ARC2", channels: 4 },
       { name: "ARC2 + D", channels: 5 },
-     ]
+    ]
   },
   {
     model: "COLORado",
@@ -471,7 +471,7 @@ export  const projectorLibrary = [
       { name: "ARC1 + D", channels: 4 },
       { name: "ARC2", channels: 4 },
       { name: "ARC2 + D", channels: 5 },
-     ]
+    ]
   },
   {
     model: "Ovation-Reve E3-IP",
@@ -481,7 +481,7 @@ export  const projectorLibrary = [
       { name: "14Ch1", channels: 14 },
       { name: "14Ch2", channels: 14 },
       { name: "18Ch", channels: 18 },
-     ]
+    ]
   },
   {
     model: "Strike4 Array",
@@ -493,9 +493,9 @@ export  const projectorLibrary = [
       { name: "4Ch", channels: 4 },
       { name: "3Ch", channels: 3 },
       { name: "1Ch", channels: 1 },
-     ]
+    ]
   },
- 
+
     {
     model: "Strike2 Array",
     brand: "Chauvet",
@@ -507,7 +507,7 @@ export  const projectorLibrary = [
       { name: "3Ch", channels: 3 },
       { name: "2Ch", channels: 2 },
       { name: "1Ch", channels: 1 },
-     ]
+    ]
   },
 
 
@@ -1313,6 +1313,15 @@ export  const projectorLibrary = [
       { name: "Standard", channels: 14 },
       { name: "Basic", channels: 11 },
       { name: "Extended", channels: 21 }
+    ]
+  },
+
+{
+    model: "Arolla Aqua S-LT",
+    brand: "Clay Paky",
+    modes: [
+      { name: "Basic mode", channels: 44 },
+      { name: "Standard mode", channels: 54 }
     ]
   },
 
