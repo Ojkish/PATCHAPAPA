@@ -180,6 +180,15 @@ export  const projectorLibrary = [
   },
 
 {
+    model: "ERA 700 Performance IP",
+    brand: "Martin",
+    modes: [
+      { name: "Basic", channels: 42 },
+      { name: "Extended", channels: 54 }
+    ]
+  },
+
+{
     model: "ERA 600 Performance",
     brand: "Martin",
     modes: [
