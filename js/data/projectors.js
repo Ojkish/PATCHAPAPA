@@ -536,6 +536,15 @@ export  const projectorLibrary = [
     ]
   },
 
+  {
+    model: "Rogue Outcast 3 Spot",
+    brand: "Chauvet Professional",
+    modes: [
+      { name: "20 ch", channels: 20 },
+      { name: "25 ch", channels: 25 }
+    ]
+  },
+
   // —————————————————————————————————————————————————————
   // Elation
   // —————————————————————————————————————————————————————
