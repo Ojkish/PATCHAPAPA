@@ -195,6 +195,14 @@ export  const projectorLibrary = [
     ]
   },
 
+  {
+    model: "MAC Viper Wash",
+    brand: "Martin",
+    modes: [
+      { name: "Basic", channels: 18 },
+      { name: "Extended", channels: 24 }
+    ]
+  },
   // —————————————————————————————————————————————————————
   // Robe
   // —————————————————————————————————————————————————————
