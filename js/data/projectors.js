@@ -225,6 +225,16 @@ export  const projectorLibrary = [
     ]
   },
 
+{
+    model: "MAC One",
+    brand: "Martin",
+    modes: [
+      { name: "Compact", channels: 19 },
+      { name: "Basic", channels: 35 },
+      { name: "Ludicrous", channels: 107 }
+    ]
+  },
+
   // —————————————————————————————————————————————————————
   // Robe
   // —————————————————————————————————————————————————————
