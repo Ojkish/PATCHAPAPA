@@ -1218,6 +1218,14 @@ export  const projectorLibrary = [
     ]
   },
 
+{
+    model: "Ultimo Hybrid",
+    brand: "Clay Paky",
+    modes: [
+      { name: "43 CH", channels: 43 }
+    ]
+  },
+
   {
     model: "Sharpy Plus",
     brand: "CLAY PAKY",
