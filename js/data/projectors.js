@@ -1372,6 +1372,16 @@ export  const projectorLibrary = [
     ]
   },
   
+  {
+    model: "Sinfonya Profile 600",
+    brand: "Clay Paky",
+    modes: [
+      { name: "Standard", channels: 58 },
+      { name: "Easy", channels: 49 },
+      { name: "White", channels: 43 }
+    ]
+  },
+
 ];
 
 /**
