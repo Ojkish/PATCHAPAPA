@@ -203,6 +203,20 @@ export  const projectorLibrary = [
       { name: "Extended", channels: 24 }
     ]
   },
+
+{
+    model: "MAC Aura XIP (Raven)",
+    brand: "Martin",
+    modes: [
+      { name: "Mode Compact", channels: 22 },
+      { name: "Mode Basic", channels: 38 },
+      { name: "Mode Extended", channels: 149 },
+      { name: "Mode Ludicrous", channels: 266 },
+      { name: "Mode Plaid", channels: 851 },
+      { name: "Mode Compact Direct", channels: 22 }
+    ]
+  },
+
   // —————————————————————————————————————————————————————
   // Robe
   // —————————————————————————————————————————————————————
