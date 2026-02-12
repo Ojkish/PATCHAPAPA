@@ -161,6 +161,16 @@ export  const projectorLibrary = [
     ]
   },
 
+{
+    model: "MAC Encore Performance",
+    brand: "Martin",
+    modes: [
+      { name: "Basic", channels: 52 },
+      { name: "Extended", channels: 62 },
+      { name: "Ludicrous", channels: 68 }
+    ]
+  },
+
   // —————————————————————————————————————————————————————
   // Robe
   // —————————————————————————————————————————————————————
