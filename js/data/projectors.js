@@ -179,6 +179,14 @@ export  const projectorLibrary = [
     ]
   },
 
+  {
+    model: "ERA 300 Profile",
+    brand: "Martin",
+    modes: [
+      { name: "21 ch", channels: 21 }
+    ]
+  },
+
   // —————————————————————————————————————————————————————
   // Robe
   // —————————————————————————————————————————————————————
