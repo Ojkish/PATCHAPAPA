@@ -518,6 +518,15 @@ export  const projectorLibrary = [
     ]
   },
 
+  {
+    model: "Maverick Force X Profile",
+    brand: "Chauvet Professional",
+    modes: [
+      { name: "31 ch", channels: 31 },
+      { name: "47 ch", channels: 47 }
+    ]
+  },
+
   // —————————————————————————————————————————————————————
   // Elation
   // —————————————————————————————————————————————————————
