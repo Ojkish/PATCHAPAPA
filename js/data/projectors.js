@@ -1317,7 +1317,25 @@ export  const projectorLibrary = [
   },
 
 {
+    model: "Arolla Aqua",
+    brand: "Clay Paky",
+    modes: [
+      { name: "Standard mode", channels: 38 },
+      { name: "Extended mode", channels: 41 }
+    ]
+  },
+
+{
     model: "Arolla Aqua S-LT",
+    brand: "Clay Paky",
+    modes: [
+      { name: "Basic mode", channels: 44 },
+      { name: "Standard mode", channels: 54 }
+    ]
+  },
+
+{
+    model: "Arolla Aqua M-LT",
     brand: "Clay Paky",
     modes: [
       { name: "Basic mode", channels: 44 },
