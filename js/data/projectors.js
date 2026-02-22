@@ -1296,6 +1296,13 @@ export  const projectorLibrary = [
     ]
   },
   {
+    model: "Axcor Profile 400",
+    brand: "Clay Paky",
+    modes: [
+      { name: "Standard mode", channels: 36 }
+    ]
+  },
+  {
     model: "Mini B",
     brand: "CLAY PAKY",
     modes: [
