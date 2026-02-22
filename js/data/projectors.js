@@ -1090,6 +1090,15 @@ export  const projectorLibrary = [
     ]
   },
 
+  {
+    model: "Merak",
+    brand: "Ayrton",
+    modes: [
+      { name: "Basic", channels: 18 },
+      { name: "Standard", channels: 21 },
+      { name: "Extended", channels: 28 }
+    ]
+  },
 
   // —————————————————————————————————————————————————————
   // Starway
