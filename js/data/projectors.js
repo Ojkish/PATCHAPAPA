@@ -690,6 +690,23 @@ export  const projectorLibrary = [
     ]
   },
   
+  {
+    "model": "Ovation CYC 3 FC",
+    "brand": "Chauvet Professional",
+    "modes": [
+      { "name": "1Ch", "channels": 1 },
+      { "name": "3Ch", "channels": 3 },
+      { "name": "5Ch", "channels": 5 },
+      { "name": "7Ch", "channels": 7 },
+      { "name": "10Ch", "channels": 10 },
+      { "name": "12Ch", "channels": 12 },
+      { "name": "13Ch", "channels": 13 },
+      { "name": "16Ch", "channels": 16 },
+      { "name": "17Ch", "channels": 17 },
+      { "name": "33Ch", "channels": 33 },
+      { "name": "HSV", "channels": 3 }
+    ]
+  },
 
   // —————————————————————————————————————————————————————
   // Elation
