@@ -651,6 +651,44 @@ export  const projectorLibrary = [
     ]
   },
 
+  {
+    "model": "COLORado Solo Edge 3",
+    "brand": "Chauvet Professional",
+    "modes": [
+      { "name": "1 Cell: CCT", "channels": 6 },
+      { "name": "1 Cell: HSV", "channels": 6 },
+      { "name": "1 Cell: RGB", "channels": 5 },
+      { "name": "1 Cell: RGBW", "channels": 6 },
+      { "name": "1 Cell: RGBWL", "channels": 7 },
+      { "name": "1 Cell: RGBWL 16-bit", "channels": 12 },
+      { "name": "1 Cell: RGB Ext.", "channels": 12 },
+      { "name": "1 Cell: RGBW Ext.", "channels": 13 },
+      { "name": "1 Cell: RGBWL Ext.", "channels": 14 },
+      { "name": "1 Cell: RGBWL Full", "channels": 21 },
+      { "name": "1 Cell: XY", "channels": 6 },
+      { "name": "1 Cell: XY Ext.", "channels": 11 },
+      { "name": "2 Cell: CCT", "channels": 9 },
+      { "name": "2 Cell: HSV", "channels": 9 },
+      { "name": "2 Cell: RGB", "channels": 8 },
+      { "name": "2 Cell: RGBW", "channels": 10 },
+      { "name": "2 Cell: RGBWL", "channels": 12 },
+      { "name": "2 Cell: RGBWL 16-bit", "channels": 22 },
+      { "name": "2 Cell: RGB Ext.", "channels": 19 },
+      { "name": "2 Cell: RGBW Ext.", "channels": 21 },
+      { "name": "2 Cell: RGBWL Ext.", "channels": 23 },
+      { "name": "2 Cell: RGBWL Full", "channels": 37 },
+      { "name": "4 Cell: CCT", "channels": 15 },
+      { "name": "4 Cell: HSV", "channels": 15 },
+      { "name": "4 Cell: RGB", "channels": 14 },
+      { "name": "4 Cell: RGBW", "channels": 18 },
+      { "name": "4 Cell: RGBWL", "channels": 22 },
+      { "name": "4 Cell: RGBWL 16-bit", "channels": 42 },
+      { "name": "4 Cell: RGB Ext.", "channels": 33 },
+      { "name": "4 Cell: RGBW Ext.", "channels": 37 },
+      { "name": "4 Cell: RGBWL Ext.", "channels": 41 },
+      { "name": "4 Cell: RGBWL Full", "channels": 69 }
+    ]
+  },
   
 
   // —————————————————————————————————————————————————————
