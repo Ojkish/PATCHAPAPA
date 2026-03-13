@@ -391,6 +391,16 @@ export const projectorLibrary = [
     ],
   },
 
+  {
+    "model": "Robin T1 Profile",
+    "brand": "Robe",
+    "modes": [
+      { "name": "Mode 1", "channels": 49 },
+      { "name": "Mode 2", "channels": 33 },
+      { "name": "Mode 3", "channels": 53 }
+    ]
+  },
+
   // —————————————————————————————————————————————————————
   // Chauvet
   // —————————————————————————————————————————————————————
