@@ -377,8 +377,10 @@ export const projectorLibrary = [
     model: "Robin LEDBeam 350",
     brand: "Robe",
     modes: [
-      { name: "6-ch", channels: 6 },
-      { name: "14-ch", channels: 14 },
+      { name: "Mode 1", channels: 22 },
+      { name: "Mode 2", channels: 16 },
+      { name: "Mode 3", channels: 24 },
+
     ],
   },
 
