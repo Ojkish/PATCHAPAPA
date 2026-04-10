@@ -18,7 +18,60 @@ export class DMXPatcher {
     this.activeSuggestionIndex = -1;       // Pour la navigation des suggestions
 
     this.init();                           // Initialisation DOM & listeners
-    this.updateStartAddress();            // Adresse de départ initiale
+    this.updateStartAddress();             // Adresse de départ initiale
+    
+    // RESTAURATION : Charger les données sauvegardées au démarrage
+    this.loadFromStorage();
+  }
+
+  /** Sauvegarde complète des données dans le localStorage */
+  persist() {
+    try {
+      const dataToSave = {
+        // On convertit la Map de Sets en tableau pour le format JSON
+        channels: Array.from(this.occupiedChannels.entries()).map(([u, set]) => [u, Array.from(set)]),
+        counters: this.projectorCounters,
+        html: this.outputHTML,
+        universe: this.univ.value,
+        address: this.addr.value
+      };
+      localStorage.setItem('patchapapa_full_data', JSON.stringify(dataToSave));
+    } catch (e) {
+      console.error("Erreur lors de la sauvegarde :", e);
+    }
+  }
+
+  /** Charge les données depuis le localStorage si elles existent */
+  loadFromStorage() {
+    const saved = localStorage.getItem('patchapapa_full_data');
+    if (!saved) return;
+
+    try {
+      const data = JSON.parse(saved);
+      
+      // 1. Restauration de l'affichage
+      this.outputHTML = data.html || '';
+      document.getElementById('output').innerHTML = this.outputHTML;
+
+      // 2. Restauration des compteurs
+      this.projectorCounters = data.counters || {};
+
+      // 3. Restauration de la logique DMX (Re-conversion en Map et Set)
+      if (data.channels) {
+        this.occupiedChannels = new Map(
+          data.channels.map(([u, arr]) => [u, new Set(arr)])
+        );
+      }
+
+      // 4. Restauration des champs de saisie
+      this.univ.value = data.universe || 1;
+      this.addr.value = data.address || 1;
+
+      this.updateUndoButton();
+      showToast('Patch précédent restauré', 1500);
+    } catch (e) {
+      console.error("Erreur lors de la récupération du patch :", e);
+    }
   }
 
   /** Initialise les éléments DOM et configure les listeners */
@@ -105,7 +158,9 @@ export class DMXPatcher {
     this.outputHTML = htmlClone;
 
     document.getElementById('output').innerHTML = this.outputHTML;
-    saveToLocalStorage('dmx_patch_results', this.outputHTML);
+    
+    // SAUVEGARDE après undo
+    this.persist();
 
     this.univ.value = universeValue;
     this.addr.value = addressValue;
@@ -122,10 +177,8 @@ export class DMXPatcher {
 
   /** Met à jour la première adresse libre */
   updateStartAddress() {
-    console.log("Mise à jour de l'adresse : ", this.univ.value);
     const u = parseInt(this.univ.value,10) || 1;
     const nextFreeAddress = this.findFirstFree(u);
-    console.log("Adresse libre trouvée : ", nextFreeAddress);
 
     // Assure-toi que l'input est bien mis à jour
     if (this.addr) {
@@ -201,7 +254,10 @@ export class DMXPatcher {
 
     this.outputHTML=html;
     document.getElementById('output').innerHTML=html;
-    saveToLocalStorage('dmx_patch_results',html);
+
+    // SAUVEGARDE après un patch réussi
+    this.persist();
+    
     showToast('Patch réalisé avec succès !',2500);
 
     if(currentA>512){ currentU++; currentA=1; }
@@ -215,40 +271,32 @@ export class DMXPatcher {
   /** Marque les canaux occupés */
   markChannelsAsOccupied(u,s,n){ if(!this.occupiedChannels.has(u)) this.occupiedChannels.set(u,new Set()); const set=this.occupiedChannels.get(u); for(let i=0;i<n;i++) set.add(s+i); }
 
+  // ... (le reste des fonctions d'autocomplete restent inchangées)
   onProjectorInput() {
     const term = this.pName.value.trim().toLowerCase();
     const list = document.getElementById('projector-suggestions');
     const modeGroup = document.getElementById('mode-group');
     const modeSelect = document.getElementById('modeSelect');
 
-    // Clear suggestions and hide suggestions list
     list.innerHTML = '';
     list.classList.add('hidden');
 
-    // If term is empty, clear modes select and return
     if (!term) {
       modeGroup.classList.add('hidden');
       modeSelect.innerHTML = '';
       return;
     }
 
-    // Filter fixtures by brand or model starting with the term
     const startsWithFilter = projectorLibrary.filter(p => p.model.toLowerCase().startsWith(term) || p.brand.toLowerCase().startsWith(term));
-
-    // Filter remaining fixtures that include the term in their brand or model (excluding those already included in startsWithFilter)
     const includesFilter = projectorLibrary.filter(p => !startsWithFilter.includes(p) && (p.model.toLowerCase().includes(term) || p.brand.toLowerCase().includes(term)));
-
-    // Merge both filters, giving priority to the ones that start with the term
     const results = [...startsWithFilter, ...includesFilter];
 
-    // If no results found, hide modes select and return
     if (results.length === 0) {
       modeGroup.classList.add('hidden');
       modeSelect.innerHTML = '';
       return;
     }
 
-    // Generate suggestions list items and highlight matching characters
     results.forEach(result => {
       const model = result.model;
       const brand = result.brand;
@@ -275,7 +323,6 @@ export class DMXPatcher {
       list.appendChild(li);
     });
 
-    // Show suggestions list
     list.classList.remove('hidden');
   }
 
@@ -283,9 +330,7 @@ export class DMXPatcher {
     const input = this.pName.value.trim().toLowerCase();
     const modeGroup = document.getElementById('mode-group');
     const modeSelect = document.getElementById('modeSelect');
-  
-    const found = projectorLibrary.find(p => p.name.toLowerCase() === input);
-  
+    const found = projectorLibrary.find(p => p.model.toLowerCase() === input);
     if (!found) {
       modeGroup.classList.add('hidden');
       modeSelect.innerHTML = '';
@@ -298,9 +343,9 @@ export class DMXPatcher {
     const items = list.querySelectorAll('li');
     if (items.length === 0) return;
   
-    const input = document.getElementById('projectorName'); // champ de saisie
-    const modeGroup = document.getElementById('mode-group'); // conteneur du mode
-    const modeSelect = document.getElementById('modeSelect'); // liste des modes
+    const input = document.getElementById('projectorName');
+    const modeGroup = document.getElementById('mode-group');
+    const modeSelect = document.getElementById('modeSelect');
   
     if (e.key === 'ArrowDown') {
       e.preventDefault();
@@ -313,29 +358,21 @@ export class DMXPatcher {
     } else if (e.key === 'Enter') {
       e.preventDefault();
       if (this.activeSuggestionIndex >= 0) {
-        // Sélection via flèche puis entrée : simule un clic
         items[this.activeSuggestionIndex].click();
         this.activeSuggestionIndex = -1;
       } else {
-        // Validation saisie manuelle (pas sélection via flèches)
         list.classList.add('hidden');
-
         const enteredText = input.value.trim().toLowerCase();
-        // On vérifie sur projectorLibrary et propriété model (pas name)
         const found = projectorLibrary.find(p => p.model.toLowerCase() === enteredText);
-
         if (!found) {
-          // Pas trouvé : masquer modes
           modeGroup.classList.add('hidden');
           modeSelect.innerHTML = '';
         } else {
-          // Trouvé : on peut appeler populateModes pour être sûr
           this.populateModes(found.model);
         }
         this.activeSuggestionIndex = -1;
       }
     } else {
-      // Sur toute autre touche, on reset l'index de sélection active
       this.activeSuggestionIndex = -1;
     }
   }
@@ -377,4 +414,3 @@ export class DMXPatcher {
 
 // Initialisation au chargement
 window.addEventListener('load', () => new DMXPatcher());
-
