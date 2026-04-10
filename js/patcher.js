@@ -325,4 +325,331 @@ export class DMXPatcher {
   }
 }
 
+window.addEventListener('load', () => new DMXPatcher());// js/patcher.js
+
+import { projectorLibrary, initProjectorDatalist } from './data/projectors.js';
+import { getValidInt, setupNumberControls, saveToLocalStorage } from './utils.js';
+import { generatePlainTextEmail } from './emailFormatter.js';
+import { showToast } from './notification.js';
+
+/**
+ * Classe gérant la logique de patch DMX, avec gestion de conflits,
+ * undo multi-niveaux, et affichage des résultats.
+ */
+export class DMXPatcher {
+  constructor() {
+    this.history = [];                     // Pile d’états pour undo
+    this.occupiedChannels = new Map();     // Map<univers, Set<adresses occupées>>
+    this.projectorCounters = {};           // Compteur de projecteurs par nom
+    this.outputHTML = '';                  // HTML des résultats pour affichage
+    this.activeSuggestionIndex = -1;       // Pour la navigation des suggestions
+
+    this.init();                           // Initialisation DOM & listeners
+    this.updateStartAddress();             // Adresse de départ initiale
+    
+    // RESTAURATION : Charger les données sauvegardées au démarrage
+    this.loadFromStorage();
+  }
+
+  /** Sauvegarde complète des données dans le localStorage */
+  persist() {
+    try {
+      const dataToSave = {
+        channels: Array.from(this.occupiedChannels.entries()).map(([u, set]) => [u, Array.from(set)]),
+        counters: this.projectorCounters,
+        html: this.outputHTML,
+        universe: this.univ.value,
+        address: this.addr.value
+      };
+      localStorage.setItem('patchapapa_full_data', JSON.stringify(dataToSave));
+    } catch (e) {
+      console.error("Erreur lors de la sauvegarde :", e);
+    }
+  }
+
+  /** Charge les données depuis le localStorage si elles existent */
+  loadFromStorage() {
+    const saved = localStorage.getItem('patchapapa_full_data');
+    if (!saved) return;
+
+    try {
+      const data = JSON.parse(saved);
+      this.outputHTML = data.html || '';
+      document.getElementById('output').innerHTML = this.outputHTML;
+      this.projectorCounters = data.counters || {};
+      if (data.channels) {
+        this.occupiedChannels = new Map(
+          data.channels.map(([u, arr]) => [u, new Set(arr)])
+        );
+      }
+      this.univ.value = data.universe || 1;
+      this.addr.value = data.address || 1;
+      this.updateUndoButton();
+    } catch (e) {
+      console.error("Erreur lors de la récupération :", e);
+    }
+  }
+
+  /** Initialise les éléments DOM et configure les listeners */
+  init() {
+    this.form         = document.getElementById('patchForm');
+    this.pName        = document.getElementById('projectorName');
+    this.pCount       = document.getElementById('projectorCount');
+    this.cCount       = document.getElementById('channelCount');
+    this.univ         = document.getElementById('universe');
+    this.addr         = document.getElementById('address');
+    this.patchBtn     = document.getElementById('patchButton');
+    this.undoBtn      = document.getElementById('undoButton');
+    this.resBtn       = document.getElementById('resultsButton');
+    
+    // INITIALISATION DU NOUVEAU BOUTON
+    this.resetBtn     = document.getElementById('resetButton');
+
+    this.navPatchBtn  = document.getElementById('show-patch');
+    this.navResultsBtn= document.getElementById('show-results');
+    
+    // Navigation
+    this.navPatchBtn.addEventListener('click', () => {
+      document.getElementById('patch-section').classList.remove('hidden');
+      document.getElementById('results-section').classList.add('hidden');
+    });
+    this.navResultsBtn.addEventListener('click', () => {
+      document.getElementById('patch-section').classList.add('hidden');
+      document.getElementById('results-section').classList.remove('hidden');
+      import('./results.js').then(m => new m.DMXPatchResults());
+    });
+
+    // Patch, Undo et RESET
+    this.patchBtn.addEventListener('click', () => this.patchProjectors());
+    this.undoBtn.addEventListener('click', () => this.undo());
+    
+    // BRANCHEMENT DU CLIC SUR RESET
+    this.resetBtn.addEventListener('click', () => this.resetPatch());
+
+    setupNumberControls('.number-control');
+
+    document.querySelectorAll('input, select').forEach(el => el.addEventListener('focus', e => e.target.select()));
+
+    const fuseOpts = { keys: ['model','brand'], useExtendedSearch: true, threshold:0.5, includeMatches:true, minMatchCharLength:1, ignoreLocation:true };
+    this.fuse = new window.Fuse(projectorLibrary, fuseOpts);
+    this.pName.addEventListener('input', () => { this.onProjectorInput(); this.checkIfValidProjectorName(); });
+    this.pName.addEventListener('keydown', e => this.onProjectorKeyDown(e));
+    this.pName.addEventListener('blur', () => setTimeout(() => document.getElementById('projector-suggestions')?.classList.add('hidden'),150));
+    this.univ.addEventListener('change', () => this.updateStartAddress());
+    this.form.addEventListener('submit', e => e.preventDefault());
+
+    this.updateUndoButton();
+  }
+
+  /** RÉINITIALISATION COMPLÈTE */
+  resetPatch() {
+    const confirmation = window.confirm("ATTENTION : Cela va effacer tout votre travail actuel. Voulez-vous continuer ?");
+    
+    if (confirmation) {
+      // 1. Nettoyer le stockage
+      localStorage.removeItem('patchapapa_full_data');
+
+      // 2. Réinitialiser les variables logiques
+      this.occupiedChannels = new Map();
+      this.projectorCounters = {};
+      this.outputHTML = '';
+      this.history = [];
+
+      // 3. Mettre à jour l'interface
+      document.getElementById('output').innerHTML = '';
+      this.univ.value = 1;
+      this.updateStartAddress(); // Repasse à l'adresse 1
+      this.updateUndoButton();   // Grise le bouton Undo
+
+      showToast('Patch réinitialisé avec succès', 3000);
+    }
+  }
+
+  /** Sauvegarde l'état courant pour undo */
+  saveState() {
+    const occClone = new Map();
+    for (const [u, set] of this.occupiedChannels) occClone.set(u, new Set(set));
+    const pcClone = { ...this.projectorCounters };
+    const htmlClone = this.outputHTML;
+    const universeValue = this.univ.value;
+    const addressValue = this.addr.value;
+    this.history.push({ occClone, pcClone, htmlClone, universeValue, addressValue });
+    this.updateUndoButton();
+  }
+
+  /** Annule le dernier patch */
+  undo() {
+    if (this.history.length === 0) {
+      showToast('Rien à annuler',2000);
+      return;
+    }
+    const { occClone, pcClone, htmlClone, universeValue, addressValue } = this.history.pop();
+    this.occupiedChannels = occClone;
+    this.projectorCounters = pcClone;
+    this.outputHTML = htmlClone;
+    document.getElementById('output').innerHTML = this.outputHTML;
+    this.persist(); // On sauvegarde l'état après undo
+    this.univ.value = universeValue;
+    this.addr.value = addressValue;
+    showToast('Dernier patch annulé',1500);
+    this.updateUndoButton();
+  }
+
+  updateUndoButton() {
+    if (this.history.length>0) this.undoBtn.removeAttribute('disabled');
+    else this.undoBtn.setAttribute('disabled','true');
+  }
+
+  updateStartAddress() {
+    const u = parseInt(this.univ.value,10) || 1;
+    const nextFreeAddress = this.findFirstFree(u);
+    if (this.addr) this.addr.value = nextFreeAddress;
+  }
+
+  findFirstFree(u) {
+    const set = this.occupiedChannels.get(u)||new Set();
+    for(let i=1;i<=512;i++) if(!set.has(i)) return i;
+    return 1;
+  }
+
+  patchProjectors() {
+    this.saveState();
+    document.getElementById('projector-suggestions')?.classList.add('hidden');
+    const name = (this.pName.value.trim()||'PROJO').toUpperCase();
+    const pc = getValidInt('projectorCount');
+    const cc = getValidInt('channelCount');
+    let u = getValidInt('universe');
+    let a = getValidInt('address');
+    if(!pc||!cc||!u||!a) return;
+
+    let conflictIdx=-1, tempU=u, tempA=a;
+    for(let i=0;i<pc;i++){
+      let end=tempA+cc-1;
+      if(end>512){ tempU++; tempA=1; end=tempA+cc-1; }
+      if(!this.areChannelsAvailable(tempU,tempA,cc)){ conflictIdx=i; break; }
+      tempA+=cc;
+    }
+
+    if(conflictIdx>=0){
+      const ok=window.confirm(`Conflit sur projecteur ${conflictIdx+1}. OK pour décaler ?`);
+      if(!ok) return;
+    }
+
+    let html=this.outputHTML, currentU=u, currentA=a;
+    this.projectorCounters[name] = this.projectorCounters[name]||0;
+    const batchEnd = conflictIdx>=0?conflictIdx:pc;
+
+    for(let i=0;i<batchEnd;i++){
+      this.projectorCounters[name]++;
+      const num=this.projectorCounters[name];
+      let end=currentA+cc-1;
+      if(end>512){ currentU++; currentA=1; end=currentA+cc-1; }
+      this.markChannelsAsOccupied(currentU,currentA,cc);
+      html+=`<div class="result-item"><span><strong>${name} ${num}</strong></span>`+
+            `<span class="address-start">${currentU}.${currentA}</span>`+
+            `<span class="address-end">${currentU}.${end}</span>`+
+            `<span>${cc}CH</span></div>`;
+      currentA+=cc;
+    }
+
+    if(conflictIdx>=0){
+      const findNext=()=>{ let sU=currentU,sA=1; while(true){ const set=this.occupiedChannels.get(sU)||new Set(); for(let x=sA;x<=512-cc+1;x++){ if(this.areChannelsAvailable(sU,x,cc)) return {sU,x}; } sU++; sA=1; }};
+      const {sU,x}=findNext(); currentU=sU; currentA=x;
+      for(let i=conflictIdx;i<pc;i++){
+        this.projectorCounters[name]++;
+        const num=this.projectorCounters[name];
+        let end=currentA+cc-1;
+        if(end>512){ currentU++; currentA=1; end=currentA+cc-1; }
+        this.markChannelsAsOccupied(currentU,currentA,cc);
+        html+=`<div class="result-item"><span><strong>${name} ${num}</strong></span>`+
+              `<span class="address-start">${currentU}.${currentA}</span>`+
+              `<span class="address-end">${currentU}.${end}</span>`+
+              `<span>${cc}CH</span></div>`;
+        currentA+=cc;
+      }
+    }
+
+    this.outputHTML=html;
+    document.getElementById('output').innerHTML=html;
+    this.persist(); // Sauvegarde automatique
+    showToast('Patch réalisé avec succès !',2500);
+    if(currentA>512){ currentU++; currentA=1; }
+    this.univ.value=currentU;
+    this.addr.value=currentA;
+  }
+
+  areChannelsAvailable(u,s,n){ const set=this.occupiedChannels.get(u)||new Set(); for(let i=0;i<n;i++) if(set.has(s+i)) return false; return true; }
+  markChannelsAsOccupied(u,s,n){ if(!this.occupiedChannels.has(u)) this.occupiedChannels.set(u,new Set()); const set=this.occupiedChannels.get(u); for(let i=0;i<n;i++) set.add(s+i); }
+
+  // Les autres fonctions d'autocomplete restent identiques...
+  onProjectorInput() {
+    const term = this.pName.value.trim().toLowerCase();
+    const list = document.getElementById('projector-suggestions');
+    const modeGroup = document.getElementById('mode-group');
+    const modeSelect = document.getElementById('modeSelect');
+    list.innerHTML = '';
+    list.classList.add('hidden');
+    if (!term) { modeGroup.classList.add('hidden'); modeSelect.innerHTML = ''; return; }
+    const startsWithFilter = projectorLibrary.filter(p => p.model.toLowerCase().startsWith(term) || p.brand.toLowerCase().startsWith(term));
+    const includesFilter = projectorLibrary.filter(p => !startsWithFilter.includes(p) && (p.model.toLowerCase().includes(term) || p.brand.toLowerCase().includes(term)));
+    const results = [...startsWithFilter, ...includesFilter];
+    if (results.length === 0) { modeGroup.classList.add('hidden'); modeSelect.innerHTML = ''; return; }
+    results.forEach(result => {
+      const model = result.model;
+      const brand = result.brand;
+      const li = document.createElement('li');
+      li.innerHTML = `${brand} ${model}`;
+      li.addEventListener('click', () => { this.pName.value = model; list.classList.add('hidden'); this.populateModes(model); });
+      list.appendChild(li);
+    });
+    list.classList.remove('hidden');
+  }
+
+  checkIfValidProjectorName() {
+    const input = this.pName.value.trim().toLowerCase();
+    const found = projectorLibrary.find(p => p.model.toLowerCase() === input);
+    if (!found) {
+      document.getElementById('mode-group').classList.add('hidden');
+      document.getElementById('modeSelect').innerHTML = '';
+    }
+  }
+
+  onProjectorKeyDown(e) {
+    const list = document.getElementById('projector-suggestions');
+    if (!list) return;
+    const items = list.querySelectorAll('li');
+    if (items.length === 0) return;
+    if (e.key === 'ArrowDown') { e.preventDefault(); this.activeSuggestionIndex = (this.activeSuggestionIndex + 1) % items.length; this.updateActiveSuggestion(items); }
+    else if (e.key === 'ArrowUp') { e.preventDefault(); this.activeSuggestionIndex = (this.activeSuggestionIndex - 1 + items.length) % items.length; this.updateActiveSuggestion(items); }
+    else if (e.key === 'Enter') { e.preventDefault(); if (this.activeSuggestionIndex >= 0) items[this.activeSuggestionIndex].click(); }
+  }
+
+  updateActiveSuggestion(items) {
+    items.forEach((item, idx) => {
+      if (idx === this.activeSuggestionIndex) { item.classList.add('active'); item.scrollIntoView({ block: 'nearest' }); }
+      else item.classList.remove('active');
+    });
+  }
+
+  populateModes(model) {
+    const entry = projectorLibrary.find(p => p.model === model);
+    const modeGroup  = document.getElementById('mode-group');
+    const modeSelect = document.getElementById('modeSelect');
+    if (entry) {
+      modeSelect.innerHTML = '';
+      entry.modes.forEach(m => {
+        const o = document.createElement('option');
+        o.value = m.channels;
+        o.textContent = `${m.name} (${m.channels}ch)`;
+        modeSelect.appendChild(o);
+      });
+      modeGroup.classList.remove('hidden');
+      this.cCount.value = modeSelect.value;
+      modeSelect.addEventListener('change', () => { this.cCount.value = modeSelect.value; });
+    } else {
+      modeGroup.classList.add('hidden');
+    }
+  }
+}
+
 window.addEventListener('load', () => new DMXPatcher());
