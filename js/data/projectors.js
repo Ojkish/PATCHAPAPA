@@ -1251,8 +1251,8 @@ export const projectorLibrary = [
     model: "Sharpy",
     brand: "CLAY PAKY",
     modes: [
-      { name: "10-ch", channels: 10 },
-      { name: "11-ch", channels: 11 },
+      { name: "Standard", channels: 16 },
+      { name: "Vector", channels: 20 },
     ],
   },
 
