@@ -5,7 +5,7 @@ import { showToast } from './notification.js';
 export class DMXPatchResults {
   constructor() {
     this.storageKey = 'patchapapa_state';
-    this.patchData = []; // Liste des lignes de patch décodées
+    this.patchData = []; // Données brutes pour le filtrage et l'export
     this.init();
   }
 
@@ -16,43 +16,46 @@ export class DMXPatchResults {
     this.setupExport();
   }
 
-  /** Charge et décode les données du localStorage */
+  /** Charge les données du localStorage et les transforme en objets JS */
   loadFromStorage() {
     const saved = localStorage.getItem(this.storageKey);
-    if (!saved) return;
+    if (!saved) {
+      this.patchData = [];
+      return;
+    }
 
     try {
       const data = JSON.parse(saved);
-      // On utilise le HTML généré ou on reconstruit à partir des données brutes
-      // Pour la page résultat, le plus simple est d'extraire les infos du HTML stocké
-      // ou de travailler sur une structure de données dédiée.
+      // On parse le HTML stocké pour reconstruire nos objets de données
       this.parseHTMLToData(data.html || '');
     } catch (e) {
-      console.error("Erreur lors du chargement des résultats :", e);
+      console.error("Erreur lecture storage:", e);
+      this.patchData = [];
     }
   }
 
-  /** Transforme le HTML stocké en objets manipulables pour le filtrage/tri */
-  parseHTMLToData(html) {
-    const tempDiv = document.createElement('div');
-    tempDiv.innerHTML = html;
-    const items = tempDiv.querySelectorAll('.result-item');
+  /** Transforme les balises HTML du patch en données exploitables */
+  parseHTMLToData(htmlString) {
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(htmlString, 'text/html');
+    const items = doc.querySelectorAll('.result-item');
 
     this.patchData = Array.from(items).map(item => {
       const spans = item.querySelectorAll('span');
-      const fullAddressStart = spans[1].textContent.split('.'); // "1.10" -> ["1", "10"]
+      // spans[1] contient "1.10" (Univ.Addr)
+      const fullStart = spans[1].textContent.split('.');
       
       return {
-        name: spans[0].textContent,
-        universe: parseInt(fullAddressStart[0]),
-        address: parseInt(fullAddressStart[1]),
-        endAddress: spans[2].textContent,
-        channels: spans[3].textContent
+        name: spans[0].textContent.trim(),
+        universe: parseInt(fullStart[0]) || 1,
+        address: parseInt(fullStart[1]) || 1,
+        endAddress: spans[2].textContent.trim(),
+        channels: spans[3].textContent.replace('CH', '').trim()
       };
     });
   }
 
-  /** Affiche le tableau dans le DOM */
+  /** Affiche le tableau avec filtres optionnels */
   renderTable(filterName = '', filterUniv = 'all') {
     const tbody = document.querySelector('#results-table tbody');
     if (!tbody) return;
@@ -63,60 +66,77 @@ export class DMXPatchResults {
       return matchName && matchUniv;
     });
 
+    if (filtered.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; padding:20px;">Aucun résultat trouvé</td></tr>';
+      return;
+    }
+
     tbody.innerHTML = filtered.map(d => `
       <tr>
         <td>${d.name}</td>
-        <td>Univ ${d.universe}</td>
+        <td>Univers ${d.universe}</td>
         <td>${d.address}</td>
         <td>${d.endAddress}</td>
-        <td>${d.channels}</td>
+        <td>${d.channels} CH</td>
       </tr>
     `).join('');
   }
 
+  /** Configure la recherche temps réel */
   setupFilters() {
     const nameInput = document.getElementById('name-filter');
     const univSelect = document.getElementById('universe-filter');
 
-    if (nameInput) {
-      nameInput.addEventListener('input', (e) => {
-        this.renderTable(e.target.value, univSelect.value);
-      });
-    }
+    const update = () => this.renderTable(nameInput?.value || '', univSelect?.value || 'all');
 
-    if (univSelect) {
-      univSelect.addEventListener('change', (e) => {
-        this.renderTable(nameInput.value, e.target.value);
-      });
-    }
+    nameInput?.addEventListener('input', update);
+    univSelect?.addEventListener('change', update);
   }
 
+  /** Gère le CSV et l'Email en se basant sur les données fraîches */
   setupExport() {
-    const exportBtn = document.getElementById('export-csv');
-    if (!exportBtn) return;
+    const csvBtn = document.getElementById('export-csv');
+    const emailBtn = document.getElementById('send-email');
 
-    exportBtn.addEventListener('click', () => {
-      if (this.patchData.length === 0) {
-        showToast("Rien à exporter", 2000);
-        return;
-      }
+    // Fonction interne pour garantir qu'on exporte les données à jour
+    const getFreshData = () => {
+      this.loadFromStorage();
+      return this.patchData;
+    };
 
-      let csv = "Nom;Univers;Depart;Fin;Canaux\n";
-      this.patchData.forEach(d => {
+    // --- LOGIQUE CSV ---
+    csvBtn?.addEventListener('click', () => {
+      const data = getFreshData();
+      if (data.length === 0) return showToast("Patch vide", 2000);
+
+      let csv = "Nom;Univers;Adresse_Depart;Adresse_Fin;Canaux\n";
+      data.forEach(d => {
         csv += `${d.name};${d.universe};${d.address};${d.endAddress};${d.channels}\n`;
       });
 
       const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-      const link = document.createElement("a");
       const url = URL.createObjectURL(blob);
-      link.setAttribute("href", url);
-      link.setAttribute("download", "patch_dmx.csv");
-      link.style.visibility = 'hidden';
-      document.body.appendChild(link);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = `Patch_DMX_${new Date().toLocaleDateString().replace(/\//g, '-')}.csv`;
       link.click();
-      document.body.removeChild(link);
+      showToast("Fichier CSV prêt", 2000);
+    });
+
+    // --- LOGIQUE EMAIL ---
+    emailBtn?.addEventListener('click', async () => {
+      const data = getFreshData();
+      if (data.length === 0) return showToast("Patch vide", 2000);
+
+      try {
+        const { generatePlainTextEmail } = await import('./emailFormatter.js');
+        const body = generatePlainTextEmail(data);
+        const subject = encodeURIComponent(`Patch DMX - ${new Date().toLocaleDateString()}`);
+        
+        window.location.href = `mailto:?subject=${subject}&body=${encodeURIComponent(body)}`;
+      } catch (err) {
+        showToast("Erreur d'envoi", 2000);
+      }
     });
   }
 }
-
-// L'instanciation est gérée par le switch de section dans patcher.js
