@@ -90,50 +90,64 @@ export class DMXPatcher {
   }
 
   // --- RECHERCHE MULTI-MOTS AMÉLIORÉE ---
-  onProjectorInput() {
+onProjectorInput() {
     const term = this.pName.value.trim().toLowerCase();
     const list = document.getElementById('projector-suggestions');
     const modeGroup = document.getElementById('mode-group');
     const modeSelect = document.getElementById('modeSelect');
 
+    list.innerHTML = '';
+    list.classList.add('hidden');
+
     if (!term) {
-      list.classList.add('hidden');
       modeGroup.classList.add('hidden');
+      modeSelect.innerHTML = '';
       return;
     }
 
-    const searchWords = term.split(/\s+/);
+    // 1. Découpage de la recherche en mots-clés
+    const searchWords = term.split(/\s+/).filter(w => w.length > 0);
+
+    // 2. Filtrage de la bibliothèque (chaque mot doit être présent)
     const results = projectorLibrary.filter(p => {
       const fullName = `${p.brand} ${p.model}`.toLowerCase();
       return searchWords.every(word => fullName.includes(word));
     });
 
-    list.innerHTML = '';
     if (results.length === 0) {
-      list.classList.add('hidden');
+      modeGroup.classList.add('hidden');
       return;
     }
 
+    // 3. Construction de la liste des suggestions
     results.slice(0, 10).forEach(result => {
       const li = document.createElement('li');
-      let highlighted = `${result.brand} ${result.model}`;
-      searchWords.forEach(w => {
-        if(w.length > 0) {
-          const reg = new RegExp(`(${w})`, 'gi');
-          highlighted = highlighted.replace(reg, "<strong>$1</strong>");
-        }
+      const fullName = `${result.brand} ${result.model}`;
+      
+      let highlighted = fullName;
+
+      // On trie les mots du plus long au plus court pour un remplacement propre
+      const sortedWords = [...searchWords].sort((a, b) => b.length - a.length);
+
+      sortedWords.forEach(w => {
+        // La regex (?![^<]*>) empêche de remplacer des caractères à l'intérieur des balises <strong>
+        const reg = new RegExp(`(${w})(?![^<]*>)`, 'gi');
+        highlighted = highlighted.replace(reg, "<strong>$1</strong>");
       });
+
       li.innerHTML = highlighted;
+      
       li.addEventListener('click', () => {
         this.pName.value = result.model;
         list.classList.add('hidden');
         this.populateModes(result.model);
       });
+      
       list.appendChild(li);
     });
+
     list.classList.remove('hidden');
   }
-
   // --- PERSISTANCE & HISTORIQUE ---
   persistData() {
     const state = {
