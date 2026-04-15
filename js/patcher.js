@@ -305,20 +305,33 @@ export class DMXPatcher {
     this.updateUndoButton();
   }
 
-  undo() {
+async undo() {
     if (this.history.length === 0) return;
-    const { occClone, pcClone, htmlClone, universeValue, addressValue } = this.history.pop();
-    this.occupiedChannels = occClone;
-    this.projectorCounters = pcClone;
-    this.outputHTML = htmlClone;
-    document.getElementById('output').innerHTML = this.outputHTML;
-    this.persistData();
-    this.univ.value = universeValue;
-    this.addr.value = addressValue;
-    this.updateUndoButton();
-    showToast('Annulé', 1000);
-  }
 
+    // Demande de confirmation avant d'annuler
+    const ok = await this.askConfirmation(
+      "Annuler l'action", 
+      "Voulez-vous vraiment supprimer le dernier ajout de projecteurs ?"
+    );
+
+    if (ok) {
+      const { occClone, pcClone, htmlClone, universeValue, addressValue } = this.history.pop();
+      this.occupiedChannels = occClone;
+      this.projectorCounters = pcClone;
+      this.outputHTML = htmlClone;
+      
+      const outputElem = document.getElementById('output');
+      if (outputElem) outputElem.innerHTML = this.outputHTML;
+      
+      this.persistData();
+      
+      this.univ.value = universeValue;
+      this.addr.value = addressValue;
+      
+      this.updateUndoButton();
+      showToast('Dernière action annulée', 2000);
+    }
+  }
   updateUndoButton() {
     if (this.undoBtn) this.undoBtn.disabled = this.history.length === 0;
   }
