@@ -30,7 +30,7 @@ export class DMXPatcher {
     this.patchBtn = document.getElementById('patchButton');
     this.undoBtn = document.getElementById('undoButton');
     this.resetBtn = document.getElementById('resetButton'); 
-    
+
     this.modal = document.getElementById('custom-modal');
     this.modalConfirmBtn = document.getElementById('modal-confirm');
     this.modalCancelBtn = document.getElementById('modal-cancel');
@@ -44,6 +44,10 @@ export class DMXPatcher {
       document.getElementById('patch-section').classList.add('hidden');
       document.getElementById('results-section').classList.remove('hidden');
       import('./results.js').then(m => new m.DMXPatchResults());
+    });
+    // Bouton de raccourci vers les résultats (sous le bouton Reset)
+    document.getElementById('resultsButton')?.addEventListener('click', () => {
+    document.getElementById('show-results').click(); 
     });
 
     this.patchBtn.addEventListener('click', () => this.patchProjectors());
