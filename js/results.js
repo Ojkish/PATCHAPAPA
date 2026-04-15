@@ -6,7 +6,7 @@ export class DMXPatchResults {
   constructor() {
     this.storageKey = 'patchapapa_state';
     this.patchData = [];
-    // Tri par défaut : Univers (croissant), puis Adresse (croissant)
+    // Tri initial par Univers puis par Adresse
     this.currentSort = { key: 'universe', asc: true };
     
     this.init();
@@ -21,7 +21,7 @@ export class DMXPatchResults {
     this.setupExport();
   }
 
-  /** Charge et parse le HTML du localStorage pour en extraire les données */
+  /** Extrait les données depuis le localStorage (HTML converti en Objets) */
   loadFromStorage() {
     const saved = localStorage.getItem(this.storageKey);
     if (!saved) return;
@@ -29,7 +29,7 @@ export class DMXPatchResults {
       const data = JSON.parse(saved);
       this.parseHTMLToData(data.html || '');
     } catch (e) { 
-      console.error("Erreur de chargement des données:", e); 
+      console.error("Erreur de lecture du stockage :", e); 
     }
   }
 
@@ -40,6 +40,7 @@ export class DMXPatchResults {
 
     this.patchData = Array.from(items).map(item => {
       const spans = item.querySelectorAll('span');
+      // On découpe "1.001" en [1, 001]
       const fullStart = spans[1].textContent.split('.');
       return {
         name: spans[0].textContent.trim(),
@@ -51,23 +52,22 @@ export class DMXPatchResults {
     });
   }
 
-  /** Mise à jour des filtres : Univers réels et Noms de modèles uniques sans numéros */
+  /** Met à jour les options de filtrage selon les données réelles */
   updateFilterUI() {
     const univSelect = document.getElementById('universe-filter');
     const nameInput = document.getElementById('name-filter');
 
     if (this.patchData.length === 0) return;
 
-    // 1. Univers dynamiques
+    // 1. Univers dynamiques (Uniquement ceux présents dans le patch)
     const universes = [...new Set(this.patchData.map(d => d.universe))].sort((a,b) => a - b);
     if (univSelect) {
       univSelect.innerHTML = '<option value="all">Tous les univers</option>' + 
         universes.map(u => `<option value="${u}">Univers ${u}</option>`).join('');
     }
 
-    // 2. Suggestions de noms épurées (ex: "Aura 12" -> "Aura")
+    // 2. Suggestions de noms (Sans les numéros à la fin pour un filtre propre)
     const baseNames = [...new Set(this.patchData.map(d => {
-      // Regex : supprime l'espace suivi de chiffres à la fin du nom
       return d.name.replace(/\s+\d+$/, '').trim();
     }))].sort();
 
@@ -81,6 +81,7 @@ export class DMXPatchResults {
     nameInput?.setAttribute('list', 'patched-names-list');
   }
 
+  /** Affiche le tableau avec filtrage et tri naturel */
   renderTable() {
     const tbody = document.querySelector('#results-table tbody');
     const nameVal = document.getElementById('name-filter')?.value.toLowerCase() || '';
@@ -95,28 +96,26 @@ export class DMXPatchResults {
       return matchName && matchUniv;
     });
 
-    // 2. TRI NATUREL (L'intelligence du classement)
+    // 2. Tri Intelligent (Naturel pour les noms, numérique pour les adresses)
     filtered.sort((a, b) => {
       const valA = a[this.currentSort.key];
       const valB = b[this.currentSort.key];
       
-      // Si on trie par nom, on utilise le mode "numeric" pour que 2 vienne avant 10
       if (this.currentSort.key === 'name') {
         return this.currentSort.asc 
           ? valA.localeCompare(valB, undefined, { numeric: true, sensitivity: 'base' })
           : valB.localeCompare(valA, undefined, { numeric: true, sensitivity: 'base' });
       }
 
-      // Pour les chiffres (univers, adresse, canaux)
       return this.currentSort.asc ? valA - valB : valB - valA;
     });
 
-    // 3. Rendu HTML
+    // 3. Construction du HTML (5 colonnes pour l'alignement)
     tbody.innerHTML = filtered.map(d => `
       <tr>
         <td>${d.name}</td>
         <td>Univers ${d.universe}</td>
-        <td>${d.address}</td>
+        <td style="color: #3b82f6; font-weight: bold;">${d.address}</td>
         <td>${d.endAddress}</td>
         <td>${d.channels} CH</td>
       </tr>
@@ -131,11 +130,14 @@ export class DMXPatchResults {
     document.getElementById('universe-filter')?.addEventListener('change', update);
   }
 
+  /** Gère le clic sur les titres de colonnes pour trier */
   setupSorting() {
     const headers = document.querySelectorAll('#results-table th');
+    // L'ordre des clés doit correspondre à l'ordre des <th> dans le HTML
     const keys = ['name', 'universe', 'address', 'endAddress', 'channels'];
 
     headers.forEach((th, index) => {
+      th.style.cursor = 'pointer';
       th.addEventListener('click', () => {
         const key = keys[index];
         if (this.currentSort.key === key) {
@@ -193,6 +195,7 @@ export class DMXPatchResults {
         const subject = encodeURIComponent(`Patch DMX - ${new Date().toLocaleDateString()}`);
         window.location.href = `mailto:?subject=${subject}&body=${encodeURIComponent(body)}`;
       } catch (err) {
+        console.error(err);
         showToast("Erreur d'envoi", 2000);
       }
     });
