@@ -1,7 +1,7 @@
 // js/emailFormatter.js
 
 /**
- * Génère un e-mail formaté avec listing technique et vue par univers.
+ * Génère un e-mail formaté aéré pour mobile avec listing par modèle et par univers.
  * @param {Array} patchResults - Données provenant du localStorage
  */
 export function generatePlainTextEmail(patchResults) {
@@ -30,32 +30,30 @@ export function generatePlainTextEmail(patchResults) {
   const divider = "============================================================";
   const subDivider = "------------------------------------------------------------";
 
-  // Entête
+  // Entête du mail
   lines.push(divider);
   lines.push("   PATCH DMX - RÉCAPITULATIF");
   lines.push(divider, "");
 
-  // Listing technique (Ancienne partie E sans barres)
-  lines.push("ID     ADDR      MODEL               MODE         END");
-  lines.push(subDivider);
-
+  // Listing technique aéré (Mode intégré au titre de groupe)
   for (const key in modelGroups) {
     const g = modelGroups[key];
-    lines.push(`${g.name} (x${g.items.length})`);
+    lines.push(`${g.name} mode ${g.ch} ch (x${g.items.length})`);
     
     g.items.forEach((r, idx) => {
       const id = String(idx + 1).padStart(2, '0');
       const addr = `${r.universe}.${String(r.address).padStart(3, '0')}`;
-      const name = g.name.padEnd(20).substring(0, 20);
-      const mode = `${g.ch}ch`.padEnd(12);
+      const name = g.name.padEnd(25).substring(0, 25); // Aligne le nom sur 25 caractères
       const end = String(r.endAddress).includes('.') ? r.endAddress.split('.')[1] : r.endAddress;
+      const endPart = `(-${String(end).padStart(3, '0')})`;
       
-      lines.push(`${id}     ${addr.padEnd(10)} ${name} ${mode} ${String(end).padStart(3, '0')}`);
+      // Structure : ID [5 espaces] ADDR [6 espaces] NOM [Aligné] (END)
+      lines.push(`${id}     ${addr.padEnd(10)} ${name} ${endPart}`);
     });
-    lines.push("");
+    lines.push(""); // Espace entre les groupes de machines
   }
 
-  // Vue par univers formatée (Ancienne partie H)
+  // Vue par univers (Une machine par ligne)
   lines.push(divider);
   lines.push("   VUE PAR UNIVERS");
   lines.push(divider, "");
