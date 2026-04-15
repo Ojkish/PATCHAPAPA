@@ -19,6 +19,7 @@ export class DMXPatchResults {
     this.setupFilters();
     this.setupSorting();
     this.setupExport();
+    this.setupRowClick(); 
   }
 
   /** Extrait les données depuis le localStorage (HTML converti en Objets) */
@@ -40,14 +41,15 @@ export class DMXPatchResults {
 
     this.patchData = Array.from(items).map(item => {
       const spans = item.querySelectorAll('span');
-      // On découpe "1.001" en [1, 001]
       const fullStart = spans[1].textContent.split('.');
       return {
         name: spans[0].textContent.trim(),
         universe: parseInt(fullStart[0]) || 1,
         address: parseInt(fullStart[1]) || 1,
         endAddress: spans[2].textContent.trim(),
-        channels: parseInt(spans[3].textContent) || 0
+        channels: parseInt(spans[3].textContent) || 0,
+        // On récupère l'état coché pour l'affichage du tableau
+        isChecked: item.classList.contains('is-checked')
       };
     });
   }
@@ -59,14 +61,12 @@ export class DMXPatchResults {
 
     if (this.patchData.length === 0) return;
 
-    // 1. Univers dynamiques
     const universes = [...new Set(this.patchData.map(d => d.universe))].sort((a,b) => a - b);
     if (univSelect) {
       univSelect.innerHTML = '<option value="all">Tous les univers</option>' + 
         universes.map(u => `<option value="${u}">Univ. ${u}</option>`).join('');
     }
 
-    // 2. Suggestions de noms
     const baseNames = [...new Set(this.patchData.map(d => {
       return d.name.replace(/\s+\d+$/, '').trim();
     }))].sort();
@@ -89,14 +89,12 @@ export class DMXPatchResults {
 
     if (!tbody) return;
 
-    // 1. Filtrage
     let filtered = this.patchData.filter(d => {
       const matchName = d.name.toLowerCase().includes(nameVal);
       const matchUniv = univVal === 'all' || d.universe === parseInt(univVal);
       return matchName && matchUniv;
     });
 
-    // 2. Tri Intelligent
     filtered.sort((a, b) => {
       const valA = a[this.currentSort.key];
       const valB = b[this.currentSort.key];
@@ -110,12 +108,12 @@ export class DMXPatchResults {
       return this.currentSort.asc ? valA - valB : valB - valA;
     });
 
-    // 3. Construction du HTML (Affichage simplifié de l'Univers)
+    // Construction du HTML : On applique la classe is-checked sur le <tr>
     tbody.innerHTML = filtered.map(d => `
-      <tr>
+      <tr class="${d.isChecked ? 'is-checked' : ''}" data-univ="${d.universe}" data-addr="${d.address}">
         <td>${d.name}</td>
         <td>${d.universe}</td>
-        <td style="color: #3b82f6; font-weight: bold;">${d.address}</td>
+        <td>${d.address}</td>
         <td>${d.endAddress}</td>
         <td>${d.channels} CH</td>
       </tr>
@@ -124,19 +122,69 @@ export class DMXPatchResults {
     this.updateHeaderIcons();
   }
 
+  /** Gestion du clic pour cocher/décocher depuis les résultats */
+  setupRowClick() {
+    const tbody = document.querySelector('#results-table tbody');
+    if (!tbody) return;
+
+    tbody.addEventListener('click', (e) => {
+      const tr = e.target.closest('tr');
+      if (!tr) return;
+
+      const univ = parseInt(tr.dataset.univ);
+      const addr = parseInt(tr.dataset.addr);
+
+      // Toggle visuel local
+      tr.classList.toggle('is-checked');
+
+      // Mise à jour de la donnée en mémoire locale
+      const item = this.patchData.find(d => d.universe === univ && d.address === addr);
+      if (item) item.isChecked = tr.classList.contains('is-checked');
+
+      // Synchronisation avec le localStorage pour le Patcher
+      this.syncCheckStateToStorage(univ, addr, tr.classList.contains('is-checked'));
+    });
+  }
+
+  /** Modifie le HTML brut stocké pour le Patcher */
+  syncCheckStateToStorage(univ, addr, isChecked) {
+    const saved = localStorage.getItem(this.storageKey);
+    if (!saved) return;
+
+    try {
+      const state = JSON.parse(saved);
+      const parser = new DOMParser();
+      const doc = parser.parseFromString(state.html, 'text/html');
+      
+      const items = doc.querySelectorAll('.result-item');
+      items.forEach(item => {
+        const spans = item.querySelectorAll('span');
+        const fullStart = spans[1].textContent.split('.');
+        
+        if (parseInt(fullStart[0]) === univ && parseInt(fullStart[1]) === addr) {
+          if (isChecked) item.classList.add('is-checked');
+          else item.classList.remove('is-checked');
+        }
+      });
+
+      state.html = doc.body.innerHTML;
+      localStorage.setItem(this.storageKey, JSON.stringify(state));
+    } catch (e) {
+      console.error("Erreur sync:", e);
+    }
+  }
+
   setupFilters() {
     const update = () => this.renderTable();
     document.getElementById('name-filter')?.addEventListener('input', update);
     document.getElementById('universe-filter')?.addEventListener('change', update);
   }
 
-  /** Gère le clic sur les titres de colonnes pour trier */
   setupSorting() {
     const headers = document.querySelectorAll('#results-table th');
     const keys = ['name', 'universe', 'address', 'endAddress', 'channels'];
 
     headers.forEach((th, index) => {
-      th.style.cursor = 'pointer';
       th.addEventListener('click', () => {
         const key = keys[index];
         if (this.currentSort.key === key) {
@@ -166,16 +214,11 @@ export class DMXPatchResults {
     const csvBtn = document.getElementById('export-csv');
     const emailBtn = document.getElementById('send-email');
 
-    const getFreshData = () => {
-      this.loadFromStorage();
-      return this.patchData;
-    };
-
     csvBtn?.addEventListener('click', () => {
-      const data = getFreshData();
-      if (data.length === 0) return showToast("Patch vide", 2000);
+      this.loadFromStorage();
+      if (this.patchData.length === 0) return showToast("Patch vide", 2000);
       let csv = "Nom;Univ.;Depart;Fin;Canaux\n";
-      data.forEach(d => {
+      this.patchData.forEach(d => {
         csv += `${d.name};${d.universe};${d.address};${d.endAddress};${d.channels}\n`;
       });
       const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
@@ -186,15 +229,14 @@ export class DMXPatchResults {
     });
 
     emailBtn?.addEventListener('click', async () => {
-      const data = getFreshData();
-      if (data.length === 0) return showToast("Patch vide", 2000);
+      this.loadFromStorage();
+      if (this.patchData.length === 0) return showToast("Patch vide", 2000);
       try {
         const { generatePlainTextEmail } = await import('./emailFormatter.js');
-        const body = generatePlainTextEmail(data);
+        const body = generatePlainTextEmail(this.patchData);
         const subject = encodeURIComponent(`Patch DMX - ${new Date().toLocaleDateString()}`);
         window.location.href = `mailto:?subject=${subject}&body=${encodeURIComponent(body)}`;
       } catch (err) {
-        console.error(err);
         showToast("Erreur d'envoi", 2000);
       }
     });
