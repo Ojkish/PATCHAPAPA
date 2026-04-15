@@ -35,24 +35,37 @@ export class DMXPatcher {
     this.modalConfirmBtn = document.getElementById('modal-confirm');
     this.modalCancelBtn = document.getElementById('modal-cancel');
 
-    // Navigation
+    // --- NAVIGATION AVEC SYNCHRONISATION ---
     document.getElementById('show-patch').addEventListener('click', () => {
+      // SYNCHRO : On recharge les données car elles ont pu être modifiées (cochées) dans les Résultats
+      this.loadData();
       document.getElementById('patch-section').classList.remove('hidden');
       document.getElementById('results-section').classList.add('hidden');
     });
+    
     document.getElementById('show-results').addEventListener('click', () => {
       document.getElementById('patch-section').classList.add('hidden');
       document.getElementById('results-section').classList.remove('hidden');
       import('./results.js').then(m => new m.DMXPatchResults());
     });
-    // Bouton de raccourci vers les résultats (sous le bouton Reset)
+    
     document.getElementById('resultsButton')?.addEventListener('click', () => {
-    document.getElementById('show-results').click(); 
+      document.getElementById('show-results').click(); 
     });
 
     this.patchBtn.addEventListener('click', () => this.patchProjectors());
     this.undoBtn.addEventListener('click', () => this.undo());
     if (this.resetBtn) this.resetBtn.addEventListener('click', () => this.resetAll());
+
+    // --- CLIC POUR COCHER/DÉCOCHER (CHECK-LIST) ---
+    document.getElementById('output').addEventListener('click', (e) => {
+      const item = e.target.closest('.result-item');
+      if (item) {
+        item.classList.toggle('is-checked');
+        this.outputHTML = document.getElementById('output').innerHTML;
+        this.persistData();
+      }
+    });
 
     setupNumberControls('.number-control');
 
@@ -90,19 +103,15 @@ export class DMXPatcher {
     });
   }
 
-  // --- GESTION DE L'HISTORIQUE ---
   getRecentHistory() {
     return JSON.parse(localStorage.getItem(this.historyKey) || '[]');
   }
 
-  // Sauvegarde la machine ET le nombre de canaux utilisé
   saveToHistory(brand, model, lastChannels) {
     let history = this.getRecentHistory();
     const newItem = { brand, model, lastChannels };
-    
     history = history.filter(item => item.model !== model);
     history.unshift(newItem);
-    
     history = history.slice(0, 10);
     localStorage.setItem(this.historyKey, JSON.stringify(history));
   }
@@ -110,7 +119,6 @@ export class DMXPatcher {
   onProjectorInput() {
     const term = this.pName.value.trim().toLowerCase();
     const list = document.getElementById('projector-suggestions');
-
     list.innerHTML = '';
     this.activeSuggestionIndex = -1;
 
@@ -121,7 +129,6 @@ export class DMXPatcher {
         title.innerHTML = `<small style="color:var(--primary-color); font-weight:bold;">🕒 RÉCENTS</small>`;
         title.style.pointerEvents = "none";
         list.appendChild(title);
-
         history.forEach(item => this.createSuggestionItem(item, list));
         list.classList.remove('hidden');
       } else {
@@ -144,7 +151,6 @@ export class DMXPatcher {
     results.slice(0, 10).forEach(result => {
       this.createSuggestionItem(result, list, searchWords);
     });
-
     list.classList.remove('hidden');
   }
 
@@ -165,13 +171,11 @@ export class DMXPatcher {
     li.addEventListener('click', () => {
       this.pName.value = projector.model;
       container.classList.add('hidden');
-      // On passe le lastChannels s'il existe (venant de l'historique)
       this.populateModes(projector.model, projector.lastChannels);
     });
     container.appendChild(li);
   }
 
-  // --- LOGIQUE DE PATCH ---
   async patchProjectors() {
     const name = (this.pName.value.trim() || 'PROJO').toUpperCase();
     const pc = getValidInt('projectorCount');
@@ -180,7 +184,6 @@ export class DMXPatcher {
     let a = getValidInt('address');
     if(!pc || !cc || !u || !a) return;
 
-    // Retrouver la marque pour l'historique
     const entry = projectorLibrary.find(p => p.model === this.pName.value);
     const brand = entry ? entry.brand : 'MANUEL';
     this.saveToHistory(brand, this.pName.value, cc);
@@ -290,7 +293,6 @@ export class DMXPatcher {
     const ok = await this.askConfirmation("Remise à zéro", "Effacer tout le patch actuel ?");
     if (ok) {
       localStorage.removeItem(this.storageKey);
-      // On ne touche pas à localStorage.removeItem(this.historyKey)
       if (this.form) this.form.reset();
       location.reload();
     }
@@ -309,33 +311,24 @@ export class DMXPatcher {
     this.updateUndoButton();
   }
 
-async undo() {
+  async undo() {
     if (this.history.length === 0) return;
-
-    // Demande de confirmation avant d'annuler
-    const ok = await this.askConfirmation(
-      "Annuler l'action", 
-      "Voulez-vous vraiment supprimer le dernier ajout de projecteurs ?"
-    );
-
+    const ok = await this.askConfirmation("Annuler l'action", "Voulez-vous vraiment supprimer le dernier ajout de projecteurs ?");
     if (ok) {
       const { occClone, pcClone, htmlClone, universeValue, addressValue } = this.history.pop();
       this.occupiedChannels = occClone;
       this.projectorCounters = pcClone;
       this.outputHTML = htmlClone;
-      
       const outputElem = document.getElementById('output');
       if (outputElem) outputElem.innerHTML = this.outputHTML;
-      
       this.persistData();
-      
       this.univ.value = universeValue;
       this.addr.value = addressValue;
-      
       this.updateUndoButton();
       showToast('Dernière action annulée', 2000);
     }
   }
+
   updateUndoButton() {
     if (this.undoBtn) this.undoBtn.disabled = this.history.length === 0;
   }
@@ -367,12 +360,7 @@ async undo() {
     if (entry) {
       modeSelect.innerHTML = entry.modes.map(m => `<option value="${m.channels}">${m.name} (${m.channels}ch)</option>`).join('');
       modeGroup.classList.remove('hidden');
-      
-      // TENTATIVE DE RESTAURATION DU MODE PRÉFÉRÉ
-      if (preferredChannels) {
-        modeSelect.value = preferredChannels;
-      }
-      
+      if (preferredChannels) modeSelect.value = preferredChannels;
       this.cCount.value = modeSelect.value;
       modeSelect.onchange = () => { this.cCount.value = modeSelect.value; };
     }
@@ -382,7 +370,6 @@ async undo() {
     const list = document.getElementById('projector-suggestions');
     if (list.classList.contains('hidden')) return;
     const items = list.querySelectorAll('li:not([style*="pointer-events"])');
-    
     if (e.key === 'ArrowDown') {
       e.preventDefault();
       this.activeSuggestionIndex = (this.activeSuggestionIndex + 1) % items.length;
