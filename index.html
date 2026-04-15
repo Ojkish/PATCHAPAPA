@@ -97,7 +97,41 @@
   </section>
 
   <section id="results-section" class="hidden">
-    </section>
+    <div class="main-container results-container">
+      <div class="results-header">
+        <h1>Résultats du Patch</h1>
+        <div class="filter-container">
+          <input type="text" id="name-filter" placeholder="Filtrer par nom">
+          <select id="universe-filter">
+            <option value="all">Tous les univers</option>
+          </select>
+        </div>
+      </div>
+  
+      <div class="results-scroll">
+        <table id="results-table">
+          <thead>
+            <tr>
+              <th>Nom <span class="sort-icon">⇅</span></th>
+              <th>U <span class="sort-icon">⇅</span></th>
+              <th style="color: #3b82f6;">Adresse <span class="sort-icon">⇅</span></th>
+              <th>Fin <span class="sort-icon">⇅</span></th>
+              <th>Ch <span class="sort-icon">⇅</span></th>
+            </tr>
+          </thead>
+          <tbody>
+            </tbody>
+        </table>
+      </div>
+  
+      <div class="export-buttons results-footer">
+        <div class="buttons-container">
+          <button id="export-csv" class="action-button primary">📄 Export CSV</button>
+          <button id="send-email" class="action-button primary">✉️ E-mail</button>
+        </div>
+      </div>
+    </div>
+  </section>
 
   <div id="custom-modal" class="modal-overlay hidden">
     <div class="modal-content">
@@ -118,4 +152,3 @@
   <script type="module" src="./js/results.js"></script>
 </body>
 </html>
-<!--Sylvain Rausa >
