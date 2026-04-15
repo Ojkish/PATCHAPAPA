@@ -9,6 +9,329 @@ button {
   border-radius: 4px;
   border: 1px solid var(--border-color);
   font-family: var(--font-family);
+  box-sizing: border-box; /* Sécurité globale */
+}
+
+/* largeur du champ de saisie */
+input {
+  width: 100%;
+}
+
+input[type="number"] {
+  text-align: center;
+}
+
+/* Boutons pour incrémenter/décrémenter */
+.number-control {
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  font-size: 1.5rem;
+  background: var(--primary-color);
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.number-control:hover {
+  opacity: 0.9;
+}
+
+/* Conteneurs et Layouts */
+.main-container, 
+#patch-section .main-container {
+  max-width: 500px;
+  margin: 0 auto 20px;
+  padding: 20px;
+  background: var(--container-bg);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  box-sizing: border-box;
+}
+
+.action-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 30px;
+}
+
+.buttons-container {
+  display: flex;
+  gap: 1rem;
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+.number-input-container {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  width: 100%;
+}
+
+.number-input-container input {
+  flex: 1;
+}
+
+/* Styles des boutons d'action principaux */
+.action-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 15px;
+  font-size: 1.1rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  border: none;
+  cursor: pointer;
+  transition: opacity 0.2s;
+  text-align: center;
+}
+
+.action-button.primary {
+  background: var(--secondary-color);
+  color: #fff;
+  gap: 5px;
+}
+
+.action-button.secondary {
+  background: var(--tertiary-color);
+  color: #fff;
+}
+
+.action-button:hover { opacity: 0.9; }
+
+/* Affichage du Patch (Output immédiat) */
+#patch-section #output .result-item {
+  display: grid;
+  grid-template-columns: 35% 1fr 1fr 1fr;
+  column-gap: 10px;
+  align-items: center;
+  padding: 8px 10px;
+  min-height: 40px;
+  background: #fff;
+  margin-bottom: 5px;
+  border-radius: 4px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.result-item .address-start {
+  color: var(--primary-color);
+  font-weight: bold;
+}
+
+/* Section Résultats (Tableau) */
+#results-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+#results-table thead th {
+  position: sticky;
+  top: 0;
+  background: white;
+  z-index: 2;
+  text-align: left;
+  padding: 0.5em;
+  border-bottom: 1px solid #ccc;
+  cursor: pointer;
+}
+
+#results-table tbody tr:nth-child(even) {
+  background-color: #dbd7d7d4;
+}
+
+#results-table td:nth-child(3),
+#results-table th:nth-child(3) {
+  font-weight: bold;
+  color: #4438e9;
+}
+
+.results-scroll {
+  display: block;
+  overflow-x: auto;
+  width: 100%;
+}
+
+.results-scroll table {
+  display: block;
+  width: max-content;
+  min-width: 100%;
+}
+
+.results-scroll table th,
+.results-scroll table td {
+  padding: 8px 10px;
+  white-space: nowrap;
+}
+
+/* Filtrage */
+.filter-container {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 15px;
+}
+
+#name-filter { flex: 1; }
+#universe-filter { width: 120px; }
+
+/* Tri (Icons) */
+.sort-icon {
+  font-size: 0.75em;
+  margin-left: 0.25em;
+  opacity: 0.3;
+}
+
+#results-table th.sorted-asc .sort-icon {
+  opacity: 1; transform: rotate(180deg); color: var(--primary-color);
+}
+#results-table th.sorted-desc .sort-icon {
+  opacity: 1; color: var(--primary-color);
+}
+
+/* Toast */
+.toast {
+  position: fixed; 
+  top: 50px;
+  left: 10%;
+  right: 10%;
+  text-align: center;
+  background: rgb(84, 132, 84);
+  color:white;
+  padding: 12px 20px;
+  border-radius: 4px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+  opacity: 0;
+  transition: opacity 0.3s;
+  pointer-events: none;
+  z-index: 10001;
+}
+.toast.show { opacity: 1; pointer-events: auto; }
+
+/* Suggestions */
+.suggestions {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: #fff;
+  border: 1px solid var(--border-color);
+  max-height: 200px;
+  overflow-y: auto;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  z-index: 1000;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  border-radius: 4px;
+}
+
+.suggestions.hidden { display: none; }
+.suggestions li { padding: 10px; cursor: pointer; }
+.suggestions li:hover, .suggestions li.active { background: #f0f0f0; }
+.suggestions strong { background-color: rgba(47, 10, 230, 0.15); font-weight: bold; }
+#projector-suggestions li.active { background-color: var(--primary-color); color: white; }
+
+/* === MODALE PERSONNALISÉE (CORRIGÉE) === */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.85); 
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  backdrop-filter: blur(6px);
+  padding: 15px; /* Padding de sécurité mobile */
+  box-sizing: border-box;
+}
+
+.modal-content {
+  background-color: #ffffff !important; 
+  padding: 25px;
+  border-radius: 12px;
+  max-width: 450px;
+  width: 100%;
+  box-sizing: border-box; /* Important pour inclure les bordures */
+  text-align: center;
+  border: 4px solid var(--primary-color);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
+  color: #000000;
+  margin: auto;
+}
+
+.modal-content h3 {
+  margin-top: 0;
+  color: var(--primary-color);
+  font-size: 1.4rem;
+  border-bottom: 2px solid #eee;
+  padding-bottom: 10px;
+}
+
+.modal-content p {
+  color: #333;
+  margin: 15px 0 25px;
+  line-height: 1.5;
+}
+
+.modal-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+}
+
+.modal-buttons button {
+  flex: 1;
+  min-width: 110px;
+  cursor: pointer;
+  font-weight: bold;
+  padding: 12px;
+}
+
+.modal-overlay.hidden { display: none !important; }
+
+/* === RESPONSIVE MOBILE === */
+@media (max-width: 768px) {
+  /* Suggestions flottantes pour éviter le clavier */
+  .suggestions {
+    position: fixed !important;
+    top: 150px !important;
+    left: 10px !important;
+    right: 10px !important;
+    width: calc(100% - 20px) !important;
+    max-width: none !important;
+  }
+
+  #patch-section { padding-bottom: 200px; }
+
+  /* Modale Responsive : Boutons empilés */
+  .modal-buttons {
+    flex-direction: column;
+  }
+  .modal-buttons button {
+    width: 100%;
+  }
+}/* components.css */
+
+/* Styles communs aux formulaires et boutons */
+input,
+select,
+button {
+  font-size: 1rem;
+  padding: 10px;
+  border-radius: 4px;
+  border: 1px solid var(--border-color);
+  font-family: var(--font-family);
 }
 
 /* largeur du champ de saisie */
