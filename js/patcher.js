@@ -7,6 +7,8 @@ import { showToast } from './notification.js';
 export class DMXPatcher {
   constructor() {
     this.history = [];
+    this.storageKey = 'patchapapa_state';
+    this.historyKey = 'patchapapa_history'; 
     this.occupiedChannels = new Map();
     this.projectorCounters = {};
     this.outputHTML = '';
@@ -50,16 +52,14 @@ export class DMXPatcher {
 
     setupNumberControls('.number-control');
 
-    // --- RESTAURATION DE L'AUTO-SÉLECTION ---
-    // Sélectionne tout le texte quand on clique ou qu'on tabule dans un champ
     document.querySelectorAll('input, select').forEach(el => {
       el.addEventListener('focus', e => e.target.select());
     });
 
+    this.pName.addEventListener('focus', () => this.onProjectorInput());
     this.pName.addEventListener('input', () => this.onProjectorInput());
     this.pName.addEventListener('keydown', e => this.onProjectorKeyDown(e));
     this.pName.addEventListener('blur', () => {
-      // Timeout pour laisser le temps au clic sur une suggestion de passer
       setTimeout(() => document.getElementById('projector-suggestions')?.classList.add('hidden'), 200);
     });
 
@@ -69,13 +69,11 @@ export class DMXPatcher {
     this.updateUndoButton();
   }
 
-  /** Modale de confirmation stylisée */
   askConfirmation(title, message) {
     return new Promise((resolve) => {
       document.getElementById('modal-title').textContent = title;
       document.getElementById('modal-message').textContent = message;
       this.modal.classList.remove('hidden');
-
       const onConfirm = () => { cleanup(); resolve(true); };
       const onCancel = () => { cleanup(); resolve(false); };
       const cleanup = () => {
@@ -83,111 +81,90 @@ export class DMXPatcher {
         this.modalCancelBtn.removeEventListener('click', onCancel);
         this.modal.classList.add('hidden');
       };
-
       this.modalConfirmBtn.addEventListener('click', onConfirm);
       this.modalCancelBtn.addEventListener('click', onCancel);
     });
   }
 
-  // --- RECHERCHE MULTI-MOTS AMÉLIORÉE ---
-onProjectorInput() {
+  // --- GESTION DE L'HISTORIQUE ---
+  getRecentHistory() {
+    return JSON.parse(localStorage.getItem(this.historyKey) || '[]');
+  }
+
+  // Sauvegarde la machine ET le nombre de canaux utilisé
+  saveToHistory(brand, model, lastChannels) {
+    let history = this.getRecentHistory();
+    const newItem = { brand, model, lastChannels };
+    
+    history = history.filter(item => item.model !== model);
+    history.unshift(newItem);
+    
+    history = history.slice(0, 10);
+    localStorage.setItem(this.historyKey, JSON.stringify(history));
+  }
+
+  onProjectorInput() {
     const term = this.pName.value.trim().toLowerCase();
     const list = document.getElementById('projector-suggestions');
-    const modeGroup = document.getElementById('mode-group');
-    const modeSelect = document.getElementById('modeSelect');
 
     list.innerHTML = '';
-    list.classList.add('hidden');
+    this.activeSuggestionIndex = -1;
 
     if (!term) {
-      modeGroup.classList.add('hidden');
-      modeSelect.innerHTML = '';
+      const history = this.getRecentHistory();
+      if (history.length > 0) {
+        const title = document.createElement('li');
+        title.innerHTML = `<small style="color:var(--primary-color); font-weight:bold;">🕒 RÉCENTS</small>`;
+        title.style.pointerEvents = "none";
+        list.appendChild(title);
+
+        history.forEach(item => this.createSuggestionItem(item, list));
+        list.classList.remove('hidden');
+      } else {
+        list.classList.add('hidden');
+      }
       return;
     }
 
-    // 1. Découpage de la recherche en mots-clés
     const searchWords = term.split(/\s+/).filter(w => w.length > 0);
-
-    // 2. Filtrage de la bibliothèque (chaque mot doit être présent)
     const results = projectorLibrary.filter(p => {
       const fullName = `${p.brand} ${p.model}`.toLowerCase();
       return searchWords.every(word => fullName.includes(word));
     });
 
     if (results.length === 0) {
-      modeGroup.classList.add('hidden');
+      list.classList.add('hidden');
       return;
     }
 
-    // 3. Construction de la liste des suggestions
     results.slice(0, 10).forEach(result => {
-      const li = document.createElement('li');
-      const fullName = `${result.brand} ${result.model}`;
-      
-      let highlighted = fullName;
-
-      // On trie les mots du plus long au plus court pour un remplacement propre
-      const sortedWords = [...searchWords].sort((a, b) => b.length - a.length);
-
-      sortedWords.forEach(w => {
-        // La regex (?![^<]*>) empêche de remplacer des caractères à l'intérieur des balises <strong>
-        const reg = new RegExp(`(${w})(?![^<]*>)`, 'gi');
-        highlighted = highlighted.replace(reg, "<strong>$1</strong>");
-      });
-
-      li.innerHTML = highlighted;
-      
-      li.addEventListener('click', () => {
-        this.pName.value = result.model;
-        list.classList.add('hidden');
-        this.populateModes(result.model);
-      });
-      
-      list.appendChild(li);
+      this.createSuggestionItem(result, list, searchWords);
     });
 
     list.classList.remove('hidden');
   }
-  // --- PERSISTANCE & HISTORIQUE ---
-  persistData() {
-    const state = {
-      html: this.outputHTML,
-      counters: this.projectorCounters,
-      channels: Array.from(this.occupiedChannels.entries()).map(([u, set]) => [u, Array.from(set)]),
-      history: this.history.map(step => ({
-        ...step,
-        occClone: Array.from(step.occClone.entries()).map(([u, set]) => [u, Array.from(set)])
-      }))
-    };
-    localStorage.setItem('patchapapa_state', JSON.stringify(state));
-  }
 
-  loadData() {
-    const saved = localStorage.getItem('patchapapa_state');
-    if (!saved) return;
-    try {
-      const data = JSON.parse(saved);
-      this.outputHTML = data.html || '';
-      this.projectorCounters = data.counters || {};
-      if (data.channels) this.occupiedChannels = new Map(data.channels.map(([u, arr]) => [u, new Set(arr)]));
-      if (data.history) {
-        this.history = data.history.map(step => ({
-          ...step,
-          occClone: new Map(step.occClone.map(([u, arr]) => [u, new Set(arr)]))
-        }));
-      }
-      document.getElementById('output').innerHTML = this.outputHTML;
-      this.updateUndoButton();
-    } catch (e) { console.error("Erreur loadData:", e); }
-  }
+  createSuggestionItem(projector, container, searchWords = []) {
+    const li = document.createElement('li');
+    const fullName = `${projector.brand} ${projector.model}`;
+    let displayHTML = fullName;
 
-  async resetAll() {
-    const ok = await this.askConfirmation("Remise à zéro", "Voulez-vous vraiment TOUT effacer (patch et historique) ?");
-    if (ok) {
-      localStorage.removeItem('patchapapa_state');
-      if (this.form) this.form.reset();
-      location.reload();
+    if (searchWords.length > 0) {
+      const sortedWords = [...searchWords].sort((a, b) => b.length - a.length);
+      sortedWords.forEach(w => {
+        const reg = new RegExp(`(${w})(?![^<]*>)`, 'gi');
+        displayHTML = displayHTML.replace(reg, "<strong>$1</strong>");
+      });
     }
+
+    li.innerHTML = displayHTML;
+    li.addEventListener('click', () => {
+      this.pName.value = projector.model;
+      container.classList.add('hidden');
+      // On passe le lastChannels s'il existe (venant de l'historique)
+      this.populateModes(projector.model, projector.lastChannels);
+    });
+    container.appendChild(li);
   }
 
   // --- LOGIQUE DE PATCH ---
@@ -199,7 +176,12 @@ onProjectorInput() {
     let a = getValidInt('address');
     if(!pc || !cc || !u || !a) return;
 
-    this.saveState(); // On sauve l'état juste avant de calculer
+    // Retrouver la marque pour l'historique
+    const entry = projectorLibrary.find(p => p.model === this.pName.value);
+    const brand = entry ? entry.brand : 'MANUEL';
+    this.saveToHistory(brand, this.pName.value, cc);
+
+    this.saveState();
 
     let conflictIdx = -1, tempU = u, tempA = a;
     for(let i=0; i<pc; i++){
@@ -212,7 +194,7 @@ onProjectorInput() {
     if(conflictIdx >= 0){
       const ok = await this.askConfirmation("Conflit DMX", `Conflit détecté sur le projecteur ${conflictIdx+1}. Décaler automatiquement sur les adresses libres ?`);
       if(!ok) { 
-        this.history.pop(); // On annule la sauvegarde d'état
+        this.history.pop();
         this.updateUndoButton();
         return; 
       }
@@ -268,7 +250,48 @@ onProjectorInput() {
     this.addr.value = currentA;
   }
 
-  // --- UTILITAIRES ---
+  persistData() {
+    const state = {
+      html: this.outputHTML,
+      counters: this.projectorCounters,
+      channels: Array.from(this.occupiedChannels.entries()).map(([u, set]) => [u, Array.from(set)]),
+      history: this.history.map(step => ({
+        ...step,
+        occClone: Array.from(step.occClone.entries()).map(([u, set]) => [u, Array.from(set)])
+      }))
+    };
+    localStorage.setItem(this.storageKey, JSON.stringify(state));
+  }
+
+  loadData() {
+    const saved = localStorage.getItem(this.storageKey);
+    if (!saved) return;
+    try {
+      const data = JSON.parse(saved);
+      this.outputHTML = data.html || '';
+      this.projectorCounters = data.counters || {};
+      if (data.channels) this.occupiedChannels = new Map(data.channels.map(([u, arr]) => [u, new Set(arr)]));
+      if (data.history) {
+        this.history = data.history.map(step => ({
+          ...step,
+          occClone: new Map(step.occClone.map(([u, arr]) => [u, new Set(arr)]))
+        }));
+      }
+      document.getElementById('output').innerHTML = this.outputHTML;
+      this.updateUndoButton();
+    } catch (e) { console.error("Erreur loadData:", e); }
+  }
+
+  async resetAll() {
+    const ok = await this.askConfirmation("Remise à zéro", "Effacer tout le patch actuel ? (Vos machines récentes resteront enregistrées)");
+    if (ok) {
+      localStorage.removeItem(this.storageKey);
+      // On ne touche pas à localStorage.removeItem(this.historyKey)
+      if (this.form) this.form.reset();
+      location.reload();
+    }
+  }
+
   saveState() {
     const occClone = new Map();
     for (const [u, set] of this.occupiedChannels) occClone.set(u, new Set(set));
@@ -320,13 +343,19 @@ onProjectorInput() {
     for(let i=0; i<n; i++) set.add(s+i);
   }
 
-  populateModes(model) {
+  populateModes(model, preferredChannels = null) {
     const entry = projectorLibrary.find(p => p.model === model);
     const modeGroup = document.getElementById('mode-group');
     const modeSelect = document.getElementById('modeSelect');
     if (entry) {
       modeSelect.innerHTML = entry.modes.map(m => `<option value="${m.channels}">${m.name} (${m.channels}ch)</option>`).join('');
       modeGroup.classList.remove('hidden');
+      
+      // TENTATIVE DE RESTAURATION DU MODE PRÉFÉRÉ
+      if (preferredChannels) {
+        modeSelect.value = preferredChannels;
+      }
+      
       this.cCount.value = modeSelect.value;
       modeSelect.onchange = () => { this.cCount.value = modeSelect.value; };
     }
@@ -335,7 +364,7 @@ onProjectorInput() {
   onProjectorKeyDown(e) {
     const list = document.getElementById('projector-suggestions');
     if (list.classList.contains('hidden')) return;
-    const items = list.querySelectorAll('li');
+    const items = list.querySelectorAll('li:not([style*="pointer-events"])');
     
     if (e.key === 'ArrowDown') {
       e.preventDefault();
