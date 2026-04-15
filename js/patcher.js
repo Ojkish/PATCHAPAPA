@@ -283,7 +283,7 @@ export class DMXPatcher {
   }
 
   async resetAll() {
-    const ok = await this.askConfirmation("Remise à zéro", "Effacer tout le patch actuel ? (Vos machines récentes resteront enregistrées)");
+    const ok = await this.askConfirmation("Remise à zéro", "Effacer tout le patch actuel ?");
     if (ok) {
       localStorage.removeItem(this.storageKey);
       // On ne touche pas à localStorage.removeItem(this.historyKey)
