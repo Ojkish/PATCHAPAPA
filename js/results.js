@@ -59,14 +59,14 @@ export class DMXPatchResults {
 
     if (this.patchData.length === 0) return;
 
-    // 1. Univers dynamiques (Uniquement ceux présents dans le patch)
+    // 1. Univers dynamiques
     const universes = [...new Set(this.patchData.map(d => d.universe))].sort((a,b) => a - b);
     if (univSelect) {
       univSelect.innerHTML = '<option value="all">Tous les univers</option>' + 
-        universes.map(u => `<option value="${u}">Univers ${u}</option>`).join('');
+        universes.map(u => `<option value="${u}">Univ. ${u}</option>`).join('');
     }
 
-    // 2. Suggestions de noms (Sans les numéros à la fin pour un filtre propre)
+    // 2. Suggestions de noms
     const baseNames = [...new Set(this.patchData.map(d => {
       return d.name.replace(/\s+\d+$/, '').trim();
     }))].sort();
@@ -96,7 +96,7 @@ export class DMXPatchResults {
       return matchName && matchUniv;
     });
 
-    // 2. Tri Intelligent (Naturel pour les noms, numérique pour les adresses)
+    // 2. Tri Intelligent
     filtered.sort((a, b) => {
       const valA = a[this.currentSort.key];
       const valB = b[this.currentSort.key];
@@ -110,11 +110,11 @@ export class DMXPatchResults {
       return this.currentSort.asc ? valA - valB : valB - valA;
     });
 
-    // 3. Construction du HTML (5 colonnes pour l'alignement)
+    // 3. Construction du HTML (Affichage simplifié de l'Univers)
     tbody.innerHTML = filtered.map(d => `
       <tr>
         <td>${d.name}</td>
-        <td>Univers ${d.universe}</td>
+        <td>${d.universe}</td>
         <td style="color: #3b82f6; font-weight: bold;">${d.address}</td>
         <td>${d.endAddress}</td>
         <td>${d.channels} CH</td>
@@ -133,7 +133,6 @@ export class DMXPatchResults {
   /** Gère le clic sur les titres de colonnes pour trier */
   setupSorting() {
     const headers = document.querySelectorAll('#results-table th');
-    // L'ordre des clés doit correspondre à l'ordre des <th> dans le HTML
     const keys = ['name', 'universe', 'address', 'endAddress', 'channels'];
 
     headers.forEach((th, index) => {
@@ -175,7 +174,7 @@ export class DMXPatchResults {
     csvBtn?.addEventListener('click', () => {
       const data = getFreshData();
       if (data.length === 0) return showToast("Patch vide", 2000);
-      let csv = "Nom;Univers;Depart;Fin;Canaux\n";
+      let csv = "Nom;Univ.;Depart;Fin;Canaux\n";
       data.forEach(d => {
         csv += `${d.name};${d.universe};${d.address};${d.endAddress};${d.channels}\n`;
       });
