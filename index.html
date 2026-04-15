@@ -4,19 +4,16 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
   <title>DMX Patcher & Résultats</title>
-  <!-- CSS Variables & Layout -->
   <link rel="stylesheet" href="css/variables.css">
   <link rel="stylesheet" href="css/layout.css">
   <link rel="stylesheet" href="css/components.css">
 </head>
 <body>
-  <!-- Navigation -->
   <nav>
     <button id="show-patch">Patch DMX</button>
     <button id="show-results">Voir Résultats</button>
   </nav>
 
-  <!-- Section Patch -->
   <section id="patch-section">
     <div class="main-container">
       <h1>PATCHAPAPA</h1>
@@ -24,7 +21,6 @@
         <div class="form-group" style="position: relative;">
           <label for="projectorName">Nom du projecteur :</label>
           <input type="text" id="projectorName" placeholder="Ex: Aura" autocomplete="off">
-          <!-- On injectera ici la liste des suggestions -->
           <ul id="projector-suggestions" class="suggestions hidden"></ul>
         </div>
         <div class="form-group hidden" id="mode-group">
@@ -65,51 +61,47 @@
             <button class="number-control" data-action="increment" data-target="address">+</button>
           </div>
         </div>
-<div class="action-buttons">
-  <button type="button" id="patchButton" class="action-button primary">Patch</button>
-  
-  <button type="button" id="undoButton" class="action-button secondary" title="Annuler">↩</button>
-  
-  <button type="button" id="resetButton" class="action-button secondary" title="Remettre à zéro">🗑️ Reset</button>
-  
-  <button type="button" id="resultsButton" class="action-button secondary">Résultats</button>
-</div>      </form>
+        <div class="action-buttons">
+          <button type="button" id="patchButton" class="action-button primary">Patch</button>
+          <button type="button" id="undoButton" class="action-button secondary" title="Annuler">↩</button>
+          <button type="button" id="resetButton" class="action-button secondary" title="Remettre à zéro">🗑️ Reset</button>
+          <button type="button" id="resultsButton" class="action-button secondary">Résultats</button>
+        </div>
+      </form>
       <div id="output"></div>
     </div>
   </section>
 
-  <!-- Section Résultats -->
   <section id="results-section" class="hidden">
     <div class="main-container results-container">
-      <!-- 1) HEADER FIXE -->
       <div class="results-header">
         <h1>Résultats du Patch DMX</h1>
         <div class="filter-container">
-          <input type="text" id="name-filter" list="name-suggestions" placeholder="Filtrer par nom">
-          <datalist id="name-suggestions"></datalist>
+          <input type="text" id="name-filter" list="patched-names-list" placeholder="Filtrer par nom">
+          <datalist id="patched-names-list"></datalist>
                     
           <select id="universe-filter">
-            <option value="">Tous les univers</option>
+            <option value="all">Tous les univers</option>
           </select>
         </div>
       </div>
   
-      <!-- 2) CONTENU SCROLLABLE -->
       <div class="results-scroll">
         <table id="results-table">
           <thead>
             <tr>
-              <th data-sort="name">Nom <span class="sort-icon">⇅</span></th>
-              <th data-sort="startAddress">Adresse <span class="sort-icon">⇅</span></th>
-              <th data-sort="endAddress">Fin <span class="sort-icon">⇅</span></th>
-              <th data-sort="channels">Ch <span class="sort-icon">⇅</span></th>
+              <th style="cursor: pointer;">Nom <span class="sort-icon">⇅</span></th>
+              <th style="cursor: pointer;">Univers <span class="sort-icon">⇅</span></th>
+              <th style="cursor: pointer; color: #3b82f6;">Adresse <span class="sort-icon">⇅</span></th>
+              <th style="cursor: pointer;">Fin <span class="sort-icon">⇅</span></th>
+              <th style="cursor: pointer;">Ch <span class="sort-icon">⇅</span></th>
             </tr>
           </thead>
-          <tbody id="results-body"></tbody>
+          <tbody>
+            </tbody>
         </table>
       </div>
   
-      <!-- 3) FOOTER FIXE -->
       <div class="export-buttons results-footer">
         <div class="buttons-container">
           <button id="export-csv" class="action-button primary">📄 Export CSV</button>
@@ -119,19 +111,17 @@
     </div>
   </section>
 
-      <!-- Fenetres alerte --> 
-      <div id="custom-modal" class="modal-overlay hidden">
-  <div class="modal-content">
-    <h3 id="modal-title">Confirmation</h3>
-    <p id="modal-message">Voulez-vous vraiment faire cela ?</p>
-    <div class="modal-buttons">
-      <button id="modal-cancel" class="action-button secondary">Annuler</button>
-      <button id="modal-confirm" class="action-button primary">Confirmer</button>
+  <div id="custom-modal" class="modal-overlay hidden">
+    <div class="modal-content">
+      <h3 id="modal-title">Confirmation</h3>
+      <p id="modal-message">Voulez-vous vraiment faire cela ?</p>
+      <div class="modal-buttons">
+        <button id="modal-cancel" class="action-button secondary">Annuler</button>
+        <button id="modal-confirm" class="action-button primary">Confirmer</button>
+      </div>
     </div>
   </div>
-</div>
 
-  <!-- Modules JavaScript -->
   <script type="module" src="./js/data/projectors.js"></script>
   <script type="module" src="./js/utils.js"></script>
   <script src="./js/lib/fuse.js"></script>
@@ -140,4 +130,5 @@
   <script type="module" src="./js/results.js"></script>
 </body>
 </html>
+
 <!--Sylvain Rausa >
