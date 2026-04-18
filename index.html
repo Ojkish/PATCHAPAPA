@@ -2,7 +2,7 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=2.0, user-scalable=yes">
   <title>DMX Patcher & Résultats</title>
   <link rel="stylesheet" href="css/variables.css">
   <link rel="stylesheet" href="css/layout.css">
@@ -18,49 +18,56 @@
     <div class="main-container">
       <h1>PATCHAPAPA</h1>
       <form id="patchForm" onsubmit="return false;">
+        
         <div class="form-group" style="position: relative;">
           <label for="projectorName">Nom du projecteur :</label>
-          <input type="text" id="projectorName" placeholder="Ex: Aura" autocomplete="off">
+          <input type="text" id="projectorName" placeholder="Ex: Aura" autocomplete="off" class="selectable-text">
           <ul id="projector-suggestions" class="suggestions hidden"></ul>
         </div>
+
         <div class="form-group hidden" id="mode-group">
           <label for="modeSelect">Mode :</label>
           <div class="mode-select-container">
             <select id="modeSelect"></select>
           </div>
         </div>
+
         <div class="form-group">
           <label for="projectorCount">Nombre de projecteurs :</label>
           <div class="number-input-container">
             <button class="number-control" data-action="decrement" data-target="projectorCount">-</button>
-            <input type="number" id="projectorCount" value="1" min="1" max="512">
+            <input type="number" id="projectorCount" value="1" min="1" max="512" inputmode="numeric" pattern="[0-9]*">
             <button class="number-control" data-action="increment" data-target="projectorCount">+</button>
           </div>
         </div>
+
         <div class="form-group">
           <label for="channelCount">Nombre de canaux par projecteur :</label>
           <div class="number-input-container">
             <button class="number-control" data-action="decrement" data-target="channelCount">-</button>
-            <input type="number" id="channelCount" value="1" min="1" max="512">
+            <input type="number" id="channelCount" value="1" min="1" max="512" inputmode="numeric" pattern="[0-9]*">
             <button class="number-control" data-action="increment" data-target="channelCount">+</button>
           </div>
         </div>
+
         <div class="form-group">
           <label for="universe">Univers de départ :</label>
           <div class="number-input-container">
             <button class="number-control" data-action="decrement" data-target="universe">-</button>
-            <input type="number" id="universe" value="1" min="1">
+            <input type="number" id="universe" value="1" min="1" inputmode="numeric" pattern="[0-9]*">
             <button class="number-control" data-action="increment" data-target="universe">+</button>
           </div>
         </div>
+
         <div class="form-group">
           <label for="address">Adresse de départ :</label>
           <div class="number-input-container">
             <button class="number-control" data-action="decrement" data-target="address">-</button>
-            <input type="number" id="address" value="1" min="1" max="512">
+            <input type="number" id="address" value="1" min="1" max="512" inputmode="numeric" pattern="[0-9]*">
             <button class="number-control" data-action="increment" data-target="address">+</button>
           </div>
         </div>
+
         <div class="action-buttons">
           <button type="button" id="patchButton" class="action-button primary">Patch</button>
           
@@ -71,6 +78,7 @@
             </svg>
             Annuler
           </button>          
+          
           <button type="button" id="resetButton" class="action-button secondary">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 8px;">
               <polyline points="3 6 5 6 21 6"></polyline>
@@ -92,7 +100,7 @@
           </button>
         </div>
       </form>
-      <div id="output"></div>
+      <div id="output" class="selectable-text"></div>
     </div>
   </section>
 
@@ -101,7 +109,7 @@
       <div class="results-header">
         <h1>Résultats du Patch</h1>
         <div class="filter-container">
-          <input type="text" id="name-filter" placeholder="Filtrer par nom">
+          <input type="text" id="name-filter" placeholder="Filtrer par nom" class="selectable-text">
           <select id="universe-filter">
             <option value="all">Tous les univers</option>
           </select>
@@ -109,7 +117,7 @@
       </div>
   
       <div class="results-scroll">
-        <table id="results-table">
+        <table id="results-table" class="selectable-text">
           <thead>
             <tr>
               <th>Nom <span class="sort-icon">⇅</span></th>
@@ -119,8 +127,7 @@
               <th>Ch <span class="sort-icon">⇅</span></th>
             </tr>
           </thead>
-          <tbody>
-            </tbody>
+          <tbody></tbody>
         </table>
       </div>
   
@@ -152,4 +159,3 @@
   <script type="module" src="./js/results.js"></script>
 </body>
 </html>
-<!-- Sylvain Rausa -->
