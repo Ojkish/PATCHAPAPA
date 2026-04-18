@@ -1,10 +1,38 @@
 /* components.css */
 
+/* === OPTIMISATIONS MOBILES GLOBALES === */
+
+/* Désactive la sélection de texte par défaut pour éviter les curseurs bleus lors des clics répétitifs */
+body {
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent; /* Supprime le rectangle gris au clic sur mobile */
+}
+
+/* Réautorise la sélection uniquement sur les données utiles et les champs de saisie */
+input, 
+textarea, 
+.selectable-text, 
+#output, 
+#results-table {
+  -webkit-user-select: text;
+  user-select: text;
+}
+
+/* Accélère le clic sur mobile (supprime le délai de 300ms) */
+.number-control, 
+.action-button, 
+.result-item, 
+nav button,
+#results-table tbody tr {
+  touch-action: manipulation;
+}
+
 /* Styles communs aux formulaires et boutons */
 input,
 select,
 button {
-  font-size: 1rem;
+  font-size: 16px; /* Minimum 16px pour éviter que iOS ne zoome auto sur le focus */
   padding: 10px;
   border-radius: 4px;
   border: 1px solid var(--border-color);
@@ -20,9 +48,10 @@ input[type="number"] {
   text-align: center;
 }
 
+/* Boutons + et - */
 .number-control {
-  width: 40px;
-  height: 40px;
+  width: 44px; /* Taille optimisée pour le pouce (standard mobile 44px) */
+  height: 44px;
   padding: 0;
   font-size: 1.5rem;
   background: var(--primary-color);
@@ -74,6 +103,7 @@ input[type="number"] {
 
 .number-input-container input {
   flex: 1;
+  height: 44px; /* Aligné sur la taille des boutons */
 }
 
 .action-button {
@@ -124,12 +154,12 @@ input[type="number"] {
 #results-table tbody tr.is-checked td:first-child::before {
   content: "✅ ";
   margin-right: 8px;
-  filter: none; /* On laisse l'encoche en couleur si tu préfères */
+  filter: none;
 }
 
 /* On garde le style du texte normal pour ne pas gêner la lecture du tableau */
 #results-table tbody tr.is-checked {
-  background-color: inherit; /* Garde la couleur de base ou le zébrage */
+  background-color: inherit; 
   opacity: 1;
   color: inherit;
 }
@@ -142,7 +172,7 @@ input[type="number"] {
   column-gap: 10px;
   align-items: center;
   padding: 8px 10px;
-  min-height: 40px;
+  min-height: 44px;
   background: #fff;
   margin-bottom: 5px;
   border-radius: 4px;
@@ -168,7 +198,7 @@ input[type="number"] {
   background: white;
   z-index: 2;
   text-align: left;
-  padding: 0.5em;
+  padding: 0.8em 0.5em; /* Un peu plus d'air pour le clic */
   border-bottom: 1px solid #ccc;
   cursor: pointer;
 }
@@ -201,7 +231,7 @@ input[type="number"] {
 
 .results-scroll table th,
 .results-scroll table td {
-  padding: 8px 10px;
+  padding: 12px 10px; /* Plus d'espace pour toucher sur mobile */
   white-space: nowrap;
 }
 
@@ -267,7 +297,7 @@ input[type="number"] {
 }
 
 .suggestions.hidden { display: none; }
-.suggestions li { padding: 10px; cursor: pointer; }
+.suggestions li { padding: 12px; cursor: pointer; } /* 12px pour faciliter le clic */
 .suggestions li:hover, .suggestions li.active { background: #f0f0f0; }
 .suggestions strong { background-color: rgba(47, 10, 230, 0.15); font-weight: bold; }
 #projector-suggestions li.active { background-color: var(--primary-color); color: white; }
@@ -333,6 +363,7 @@ input[type="number"] {
 
 .modal-overlay.hidden { display: none !important; }
 
+/* Responsive Media Queries */
 @media (max-width: 768px) {
   .suggestions {
     position: fixed !important;
@@ -349,4 +380,7 @@ input[type="number"] {
   .modal-buttons button {
     width: 100%;
   }
+  
+  /* Agrandi légèrement les titres pour lisibilité mobile */
+  h1 { font-size: 1.5rem; }
 }
