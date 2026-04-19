@@ -38,6 +38,13 @@ button {
   border: 1px solid var(--border-color);
   font-family: var(--font-family);
   box-sizing: border-box; 
+  /* Ajoute un espace de sécurité lors du scrollIntoView (JS) */
+  scroll-margin-top: 20px;
+}
+
+#projectorName {
+  /* Marge plus importante pour le nom car il se cale en 'start' (haut de l'écran) */
+  scroll-margin-top: 80px;
 }
 
 input {
@@ -92,6 +99,7 @@ input[type="number"] {
 
 .form-group {
   margin-bottom: 20px;
+  position: relative; /* Crucial pour que les suggestions se placent par rapport au champ */
 }
 
 .number-input-container {
@@ -281,7 +289,7 @@ input[type="number"] {
 /* Suggestions */
 .suggestions {
   position: absolute;
-  top: 100%;
+  top: 100%; /* S'affiche juste sous l'input */
   left: 0;
   right: 0;
   background: #fff;
@@ -292,8 +300,8 @@ input[type="number"] {
   padding: 0;
   list-style: none;
   z-index: 1000;
-  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-  border-radius: 4px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+  border-radius: 0 0 8px 8px;
 }
 
 .suggestions.hidden { display: none; }
@@ -365,15 +373,12 @@ input[type="number"] {
 
 /* Responsive Media Queries */
 @media (max-width: 768px) {
-  .suggestions {
-    position: fixed !important;
-    top: 150px !important;
-    left: 10px !important;
-    right: 10px !important;
-    width: calc(100% - 20px) !important;
-    max-width: none !important;
+  /* On permet au patch-section de scroller plus loin pour que 
+     le dernier champ ne soit pas caché par le clavier */
+  #patch-section { 
+    padding-bottom: 60vh; 
   }
-  #patch-section { padding-bottom: 200px; }
+  
   .modal-buttons {
     flex-direction: column;
   }
@@ -381,6 +386,5 @@ input[type="number"] {
     width: 100%;
   }
   
-  /* Agrandi légèrement les titres pour lisibilité mobile */
   h1 { font-size: 1.5rem; }
 }
