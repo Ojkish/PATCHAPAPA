@@ -37,7 +37,6 @@ export class DMXPatcher {
 
     // --- NAVIGATION AVEC SYNCHRONISATION ---
     document.getElementById('show-patch').addEventListener('click', () => {
-      // SYNCHRO : On recharge les données car elles ont pu être modifiées (cochées) dans les Résultats
       this.loadData();
       document.getElementById('patch-section').classList.remove('hidden');
       document.getElementById('results-section').classList.add('hidden');
@@ -69,8 +68,20 @@ export class DMXPatcher {
 
     setupNumberControls('.number-control');
 
+    // --- SCROLL AUTOMATIQUE & SÉLECTION ---
     document.querySelectorAll('input, select').forEach(el => {
-      el.addEventListener('focus', e => e.target.select());
+      el.addEventListener('focus', e => {
+        // Sélectionne le texte existant
+        e.target.select();
+        
+        // Scroll automatique pour rester visible au-dessus du clavier mobile
+        setTimeout(() => {
+          e.target.scrollIntoView({
+            behavior: 'smooth',
+            block: 'center'
+          });
+        }, 300); // Délai pour attendre la montée du clavier iOS
+      });
     });
 
     this.pName.addEventListener('focus', () => this.onProjectorInput());
@@ -85,6 +96,8 @@ export class DMXPatcher {
 
     this.updateUndoButton();
   }
+
+  // --- RESTE DU CODE INCHANGÉ ---
 
   askConfirmation(title, message) {
     return new Promise((resolve) => {
