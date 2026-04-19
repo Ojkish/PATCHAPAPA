@@ -71,16 +71,20 @@ export class DMXPatcher {
     // --- SCROLL AUTOMATIQUE & SÉLECTION ---
     document.querySelectorAll('input, select').forEach(el => {
       el.addEventListener('focus', e => {
-        // Sélectionne le texte existant
+        // Sélectionne le texte existant pour effacer rapidement
         e.target.select();
         
-        // Scroll automatique pour rester visible au-dessus du clavier mobile
+        // COMPORTEMENT MOBILE :
+        // Le champ Nom remonte tout en haut (start) pour laisser la place aux suggestions dessous
+        // Les autres champs se centrent (center)
+        const scrollPos = (e.target.id === 'projectorName') ? 'start' : 'center';
+
         setTimeout(() => {
           e.target.scrollIntoView({
             behavior: 'smooth',
-            block: 'center'
+            block: scrollPos
           });
-        }, 300); // Délai pour attendre la montée du clavier iOS
+        }, 320); // Délai pour laisser le clavier iOS monter
       });
     });
 
@@ -88,7 +92,8 @@ export class DMXPatcher {
     this.pName.addEventListener('input', () => this.onProjectorInput());
     this.pName.addEventListener('keydown', e => this.onProjectorKeyDown(e));
     this.pName.addEventListener('blur', () => {
-      setTimeout(() => document.getElementById('projector-suggestions')?.classList.add('hidden'), 200);
+      // Délai légèrement augmenté pour mobile (300ms) pour valider le clic sur suggestion
+      setTimeout(() => document.getElementById('projector-suggestions')?.classList.add('hidden'), 300);
     });
 
     this.univ.addEventListener('change', () => this.updateStartAddress());
@@ -96,8 +101,6 @@ export class DMXPatcher {
 
     this.updateUndoButton();
   }
-
-  // --- RESTE DU CODE INCHANGÉ ---
 
   askConfirmation(title, message) {
     return new Promise((resolve) => {
