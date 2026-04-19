@@ -44,7 +44,7 @@ button {
 
 #projectorName {
   /* Marge plus importante pour le nom car il se cale en 'start' (haut de l'écran) */
-  scroll-margin-top: 80px;
+  scroll-margin-top: 60px;
 }
 
 input {
