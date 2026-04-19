@@ -84,7 +84,7 @@ export class DMXPatcher {
             behavior: 'smooth',
             block: scrollPos
           });
-        }, 320); // Délai pour laisser le clavier iOS monter
+        }, 300); // Délai pour laisser le clavier iOS monter
       });
     });
 
