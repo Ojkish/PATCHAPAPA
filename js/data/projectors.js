@@ -254,7 +254,7 @@ export const projectorLibrary = [
     ],
   },
   {
-    model: "Pointe",
+    model: "Robin Pointe",
     brand: "Robe",
     modes: [
       { name: "Mode 1", channels: 24 },
@@ -347,14 +347,6 @@ export const projectorLibrary = [
       { name: "18-ch", channels: 18 },
       { name: "26-ch", channels: 26 },
       { name: "55-ch", channels: 55 },
-    ],
-  },
-  {
-    model: "Robin Pointe",
-    brand: "Robe",
-    modes: [
-      { name: "Mode 1", channels: 16 },
-      { name: "Mode 2", channels: 24 },
     ],
   },
   {
