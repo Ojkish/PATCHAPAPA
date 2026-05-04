@@ -10,8 +10,9 @@
 </head>
 <body>
   <nav>
-    <button id="show-patch">Patch DMX</button>
-    <button id="show-results">Voir Résultats</button>
+    <button id="show-patch">Patch</button>
+    <button id="show-results">Résultats</button>
+    <button id="show-projects">Projets</button>  
   </nav>
 
   <section id="patch-section">
@@ -115,6 +116,9 @@
           </select>
         </div>
       </div>
+
+      
+
   
       <div class="results-scroll">
         <table id="results-table" class="selectable-text">
@@ -140,6 +144,21 @@
     </div>
   </section>
 
+<section id="projects-section" class="hidden">
+  <div class="main-container">
+    <h1>Projets</h1>
+    <div class="action-buttons">
+      <button type="button" id="saveProjectButton" class="action-button primary">
+        💾 Sauvegarder le patch actuel
+      </button>
+    </div>
+    <div id="projects-list" style="margin-top: 30px;">
+      <!-- La liste des projets apparaîtra ici -->
+    </div>
+  </div>
+</section>
+
+
   <div id="custom-modal" class="modal-overlay hidden">
     <div class="modal-content">
       <h3 id="modal-title">Confirmation</h3>
@@ -157,5 +176,6 @@
   <script type="module" src="./js/patcher.js"></script>
   <script type="module" src="./js/emailFormatter.js"></script>
   <script type="module" src="./js/results.js"></script>
+  <script type="module" src="./js/projects.js"></script>
 </body>
 </html>
