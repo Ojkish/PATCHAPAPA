@@ -388,3 +388,41 @@ input[type="number"] {
   
   h1 { font-size: 1.5rem; }
 }
+
+
+/* === PROJETS === */
+.project-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #fff;
+  border-radius: 6px;
+  padding: 14px 16px;
+  margin-bottom: 10px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+  gap: 10px;
+}
+
+.project-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 1; /* Prend tout l'espace disponible */
+}
+
+.project-info small {
+  opacity: 0.5;
+  font-size: 0.8em;
+}
+
+.project-actions {
+  display: flex;
+  gap: 8px;
+  flex-shrink: 0; /* Les boutons ne rétrécissent jamais */
+}
+
+.project-actions .action-button {
+  padding: 10px 12px;
+  font-size: 1rem;
+  min-width: 44px; /* Taille minimum pour le pouce sur mobile */
+}
