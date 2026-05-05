@@ -27,11 +27,15 @@ askProjectName() {
   const cancel  = document.getElementById('modal-cancel');
 
   title.textContent = '💾 Sauvegarder le projet';
-  message.innerHTML = `
-    <input type="text" id="project-name-input" 
-      placeholder="Nom du projet (ex: Concert Nantes)"
-      style="width:100%; margin-top:10px;">
-  `;
+
+    message.innerHTML = ''; // on vide d'abord
+  const input = document.createElement('input');
+  input.type = 'text';
+  input.id = 'project-name-input';
+  input.placeholder = 'Nom du projet (ex: Concert Nantes)';
+  input.style.cssText = 'width:100%; margin-top:10px;';
+  message.appendChild(input);
+  
   modal.classList.remove('hidden');
 
 setTimeout(() => {
