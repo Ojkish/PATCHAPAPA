@@ -34,7 +34,13 @@ askProjectName() {
   `;
   modal.classList.remove('hidden');
 
-  setTimeout(() => document.getElementById('project-name-input')?.focus(), 100);
+setTimeout(() => {
+  const input = document.getElementById('project-name-input');
+  if (input) {
+    input.focus();
+    input.select();
+  }
+}, 100);
 
   const onConfirm = () => {
     const name = document.getElementById('project-name-input')?.value.trim();
@@ -203,7 +209,13 @@ renameProject(oldName) {
   `;
   modal.classList.remove('hidden');
 
-  setTimeout(() => document.getElementById('project-name-input')?.focus(), 100);
+setTimeout(() => {
+  const input = document.getElementById('project-name-input');
+  if (input) {
+    input.focus();
+    input.select();
+  }
+}, 100);
 
   const onConfirm = () => {
     const newName = document.getElementById('project-name-input')?.value.trim();
