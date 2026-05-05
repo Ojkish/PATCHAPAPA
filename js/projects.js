@@ -38,13 +38,8 @@ askProjectName() {
   
   modal.classList.remove('hidden');
 
-setTimeout(() => {
-  const input = document.getElementById('project-name-input');
-  if (input) {
-    input.focus();
-    input.select();
-  }
-}, 100);
+input.focus();
+input.select();
 
   const onConfirm = () => {
     const name = document.getElementById('project-name-input')?.value.trim();
@@ -213,13 +208,8 @@ renameProject(oldName) {
   `;
   modal.classList.remove('hidden');
 
-setTimeout(() => {
-  const input = document.getElementById('project-name-input');
-  if (input) {
-    input.focus();
-    input.select();
-  }
-}, 100);
+input.focus();
+input.select();
 
   const onConfirm = () => {
     const newName = document.getElementById('project-name-input')?.value.trim();
