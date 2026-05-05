@@ -43,12 +43,23 @@ export class DMXPatcher {
       document.getElementById('projects-section').classList.add('hidden');
     });
     
-    document.getElementById('show-results').addEventListener('click', () => {
-      document.getElementById('patch-section').classList.add('hidden');
-      document.getElementById('results-section').classList.remove('hidden');
-      document.getElementById('projects-section').classList.add('hidden');
-      import('./results.js').then(m => new m.DMXPatchResults());
-    });
+let resultsInstance = null;
+
+document.getElementById('show-results').addEventListener('click', () => {
+  document.getElementById('patch-section').classList.add('hidden');
+  document.getElementById('results-section').classList.remove('hidden');
+  document.getElementById('projects-section').classList.add('hidden');
+  
+  import('./results.js').then(m => {
+    if (!resultsInstance) {
+      resultsInstance = new m.DMXPatchResults();
+    } else {
+      resultsInstance.loadFromStorage();
+      resultsInstance.updateFilterUI();
+      resultsInstance.renderTable();
+    }
+  });
+});
 
     document.getElementById('show-projects').addEventListener('click', () => {
       document.getElementById('patch-section').classList.add('hidden');
