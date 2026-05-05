@@ -200,14 +200,20 @@ renameProject(oldName) {
   const confirm = document.getElementById('modal-confirm');
   const cancel  = document.getElementById('modal-cancel');
 
-  title.textContent = '✏️ Renommer le projet';
-  message.innerHTML = `
-    <input type="text" id="project-name-input"
-      value="${oldName}"
-      style="width:100%; margin-top:10px;">
-  `;
-  modal.classList.remove('hidden');
+title.textContent = '✏️ Renommer le projet';
 
+// Même approche que askProjectName — createElement au lieu de innerHTML
+message.innerHTML = '';
+const input = document.createElement('input');
+input.type = 'text';
+input.id = 'project-name-input';
+input.value = oldName;  // ← pré-remplit avec l'ancien nom
+input.style.cssText = 'width:100%; margin-top:10px;';
+message.appendChild(input);
+
+modal.classList.remove('hidden');
+
+// Focus synchrone — variable input bien définie cette fois
 input.focus();
 input.select();
 
