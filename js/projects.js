@@ -177,9 +177,15 @@ loadProject(name) {
     if (!raw) return showToast('Projet introuvable.', 2000);
     const proj = JSON.parse(raw);
     localStorage.setItem(this.storageKey, proj.state);
-    showToast(`✅ Projet "${name}" chargé !`, 2500);
+  showToast(`✅ Projet "${name}" chargé !`, 2500);
     document.getElementById('show-patch').click();
-  };
+    
+    // Recalcule la première adresse libre après que loadData() a fini
+    setTimeout(() => {
+      const univInput = document.getElementById('universe');
+      if (univInput) univInput.dispatchEvent(new Event('change'));
+    }, 100);
+    };
   const onCancel = () => cleanup();
 
   const cleanup = () => {
