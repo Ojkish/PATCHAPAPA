@@ -29,7 +29,6 @@ nav button {
 
 nav button:hover,
 nav button:focus {
-  background: rgb(187, 183, 183);
   opacity: 0.6;
 }
 
