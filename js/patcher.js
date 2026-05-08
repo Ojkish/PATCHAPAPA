@@ -299,10 +299,9 @@ document.getElementById('show-results').addEventListener('click', () => {
     this.persistData();
     showToast('Patch réalisé !', 2000);
     
-    if(currentA > 512){ currentU++; currentA = 1; }
-    this.univ.value = currentU; 
-    this.addr.value = currentA;
-  }
+if(currentA > 512){ currentU++; currentA = 1; }
+this.univ.value = currentU;
+this.updateStartAddress();  }
 
   persistData() {
     const state = {
