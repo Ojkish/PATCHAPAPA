@@ -20,6 +20,13 @@ export class DMXPatcher {
   }
 
   init() {
+
+        const setActiveNav = (activeId) => {
+      ['show-patch', 'show-results', 'show-projects'].forEach(id => {
+        document.getElementById(id).classList.toggle('active', id === activeId);
+      });
+    };
+
     this.form = document.getElementById('patchForm');
     this.pName = document.getElementById('projectorName');
     this.pCount = document.getElementById('projectorCount');
@@ -37,6 +44,7 @@ export class DMXPatcher {
 
     // --- NAVIGATION AVEC SYNCHRONISATION ---
     document.getElementById('show-patch').addEventListener('click', () => {
+      setActiveNav('show-patch'); 
       this.loadData();
       document.getElementById('patch-section').classList.remove('hidden');
       document.getElementById('results-section').classList.add('hidden');
@@ -46,6 +54,7 @@ export class DMXPatcher {
 let resultsInstance = null;
 
 document.getElementById('show-results').addEventListener('click', () => {
+  setActiveNav('show-results');
   document.getElementById('patch-section').classList.add('hidden');
   document.getElementById('results-section').classList.remove('hidden');
   document.getElementById('projects-section').classList.add('hidden');
@@ -62,6 +71,7 @@ document.getElementById('show-results').addEventListener('click', () => {
 });
 
     document.getElementById('show-projects').addEventListener('click', () => {
+      setActiveNav('show-projects');
       document.getElementById('patch-section').classList.add('hidden');
       document.getElementById('results-section').classList.add('hidden');
       document.getElementById('projects-section').classList.remove('hidden');
@@ -70,6 +80,8 @@ document.getElementById('show-results').addEventListener('click', () => {
     document.getElementById('resultsButton')?.addEventListener('click', () => {
       document.getElementById('show-results').click(); 
     });
+
+    setActiveNav('show-patch');
 
     this.patchBtn.addEventListener('click', () => this.patchProjectors());
     this.undoBtn.addEventListener('click', () => this.undo());
