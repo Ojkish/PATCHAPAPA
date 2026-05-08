@@ -1419,6 +1419,13 @@ export const projectorLibrary = [
       { name: "White", channels: 43 },
     ],
   },
+    {
+    model: "Arolla Aqua Wash HC",
+    brand: "CLAY PAKY",
+    modes: [
+      { name: "Standard", channels: 30 }
+    ]
+}
 ];
 
 /**
