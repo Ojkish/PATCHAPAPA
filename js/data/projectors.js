@@ -1210,6 +1210,15 @@ export const projectorLibrary = [
     ],
   },
 
+  {
+  model: "P15 Profile",
+  brand: "JB Lighting",
+  modes: [
+    { name: "M1", channels: 44 },
+    { name: "M2", channels: 64 },
+  ],
+},
+
   // —————————————————————————————————————————————————————
   // Clay Paky
   // —————————————————————————————————————————————————————
