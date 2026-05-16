@@ -1,6 +1,6 @@
 /* components.css */
 
-/* === OPTIMISATIONS MOBILES GLOBALES === */
+
 
 /* Désactive la sélection de texte par défaut pour éviter les curseurs bleus lors des clics répétitifs */
 body {
@@ -426,3 +426,37 @@ input[type="number"] {
   font-size: 1rem;
   min-width: 44px; /* Taille minimum pour le pouce sur mobile */
 }
+
+
+/* === AVERTISSEMENT ADRESSE === */
+#address {
+  transition: background 0.2s, border-color 0.2s;
+}
+
+input.address-free {
+  background: #eef0ff;
+  border: 2px solid #4d53ce;
+  color: #2a2e8a;
+}
+
+input.address-conflict {
+  background: #ffe0e0;
+  border: 2px solid #bb4444;
+  color: #7a1a1a;
+}
+
+#address-hint {
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 500;
+  padding-left: 4px;
+  margin-top: 6px;
+  min-height: 22px;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+#address-hint.free     { color: #2a2e8a; }
+#address-hint.conflict { color: #7a1a1a; }
