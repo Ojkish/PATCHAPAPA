@@ -21,7 +21,7 @@ export class DMXPatcher {
 
   init() {
 
-        const setActiveNav = (activeId) => {
+    const setActiveNav = (activeId) => {
       ['show-patch', 'show-results', 'show-projects'].forEach(id => {
         document.getElementById(id).classList.toggle('active', id === activeId);
       });
@@ -51,24 +51,24 @@ export class DMXPatcher {
       document.getElementById('projects-section').classList.add('hidden');
     });
     
-let resultsInstance = null;
+    let resultsInstance = null;
 
-document.getElementById('show-results').addEventListener('click', () => {
-  setActiveNav('show-results');
-  document.getElementById('patch-section').classList.add('hidden');
-  document.getElementById('results-section').classList.remove('hidden');
-  document.getElementById('projects-section').classList.add('hidden');
-  
-  import('./results.js').then(m => {
-    if (!resultsInstance) {
-      resultsInstance = new m.DMXPatchResults();
-    } else {
-      resultsInstance.loadFromStorage();
-      resultsInstance.updateFilterUI();
-      resultsInstance.renderTable();
-    }
-  });
-});
+    document.getElementById('show-results').addEventListener('click', () => {
+      setActiveNav('show-results');
+      document.getElementById('patch-section').classList.add('hidden');
+      document.getElementById('results-section').classList.remove('hidden');
+      document.getElementById('projects-section').classList.add('hidden');
+      
+      import('./results.js').then(m => {
+        if (!resultsInstance) {
+          resultsInstance = new m.DMXPatchResults();
+        } else {
+          resultsInstance.loadFromStorage();
+          resultsInstance.updateFilterUI();
+          resultsInstance.renderTable();
+        }
+      });
+    });
 
     document.getElementById('show-projects').addEventListener('click', () => {
       setActiveNav('show-projects');
@@ -99,23 +99,23 @@ document.getElementById('show-results').addEventListener('click', () => {
 
     setupNumberControls('.number-control');
 
+    // Branche l'avertissement adresse sur les 4 champs concernés
+    ['address', 'universe', 'channelCount', 'projectorCount'].forEach(id => {
+      document.getElementById(id)?.addEventListener('input', () => this.updateAddressHint());
+      document.getElementById(id)?.addEventListener('change', () => this.updateAddressHint());
+    });
+
     // --- SCROLL AUTOMATIQUE & SÉLECTION ---
     document.querySelectorAll('input, select').forEach(el => {
       el.addEventListener('focus', e => {
-        // Sélectionne le texte existant pour effacer rapidement
         e.target.select();
-        
-        // COMPORTEMENT MOBILE :
-        // Le champ Nom remonte tout en haut (start) pour laisser la place aux suggestions dessous
-        // Les autres champs se centrent (center)
         const scrollPos = (e.target.id === 'projectorName') ? 'start' : 'center';
-
         setTimeout(() => {
           e.target.scrollIntoView({
             behavior: 'smooth',
             block: scrollPos
           });
-        }, 300); // Délai pour laisser le clavier iOS monter
+        }, 300);
       });
     });
 
@@ -123,7 +123,6 @@ document.getElementById('show-results').addEventListener('click', () => {
     this.pName.addEventListener('input', () => this.onProjectorInput());
     this.pName.addEventListener('keydown', e => this.onProjectorKeyDown(e));
     this.pName.addEventListener('blur', () => {
-      // Délai légèrement augmenté pour mobile (300ms) pour valider le clic sur suggestion
       setTimeout(() => document.getElementById('projector-suggestions')?.classList.add('hidden'), 300);
     });
 
@@ -299,9 +298,10 @@ document.getElementById('show-results').addEventListener('click', () => {
     this.persistData();
     showToast('Patch réalisé !', 2000);
     
-if(currentA > 512){ currentU++; currentA = 1; }
-this.univ.value = currentU;
-this.updateStartAddress();  }
+    if(currentA > 512){ currentU++; currentA = 1; }
+    this.univ.value = currentU;
+    this.updateStartAddress();
+  }
 
   persistData() {
     const state = {
@@ -369,10 +369,10 @@ this.updateStartAddress();  }
       if (outputElem) outputElem.innerHTML = this.outputHTML;
       this.persistData();
       this.univ.value = universeValue;
-      this.addr.value = addressValue;
+      this.addr.value = addressValue;  // ← restaure l'adresse AVANT le recalcul
       this.updateUndoButton();
-      showToast('Dernière action annulée', 2000);
-    }
+      this.updateAddressHint();        // ← recalcule le hint avec les bonnes valeurs
+      showToast('Dernière action annulée', 2000);     }
   }
 
   updateUndoButton() {
@@ -385,7 +385,56 @@ this.updateStartAddress();  }
     let free = 1;
     for(let i=1; i<=512; i++) { if(!set.has(i)) { free = i; break; } }
     if (this.addr) this.addr.value = free;
+    this.updateAddressHint();
   }
+
+  updateAddressHint() {
+  const hint = document.getElementById('address-hint');
+  if (!hint) return;
+
+  const u  = parseInt(this.univ.value, 10)  || 1;
+  const a  = parseInt(this.addr.value, 10)  || 1;
+  const cc = parseInt(this.cCount.value, 10) || 1;
+  const pc = parseInt(this.pCount.value, 10) || 1;
+
+  const badge = (text) =>
+    `<span style="background:#555;color:#fff;font-size:13px;padding:3px 10px;border-radius:20px;display:inline-block;">${text}</span>`;
+  const dot = `<span style="color:#888;margin:0 2px;">·</span>`;
+
+  // Seul cas bloquant — conflit immédiat
+  if (!this.areChannelsAvailable(u, a, cc)) {
+    this.addr.className = 'address-conflict';
+    hint.className = 'conflict';
+    hint.innerHTML = `<span style="background:#bb4444;color:#fff;font-size:13px;padding:3px 10px;border-radius:20px;">⚠️ Adresse occupée</span>`;
+    return;
+  }
+
+  // Simulation du patch pour compter par univers
+  let tempU = u, tempA = a;
+  const univCounts = {};
+
+  for (let i = 0; i < pc; i++) {
+    if (tempA + cc - 1 > 512) { tempU++; tempA = 1; }
+    // Si conflit différé — on saute à la prochaine adresse libre
+    while (!this.areChannelsAvailable(tempU, tempA, cc)) {
+      tempA++;
+      if (tempA > 512 - cc + 1) { tempU++; tempA = 1; }
+    }
+    univCounts[tempU] = (univCounts[tempU] || 0) + 1;
+    tempA += cc;
+  }
+
+  // Affichage — toujours positif
+  const univKeys = Object.keys(univCounts).map(Number);
+  const parts = univKeys.map(uKey => {
+    const count = univCounts[uKey];
+    return `${count}× ${badge('U' + uKey)}`;
+  });
+
+  this.addr.className = 'address-free';
+  hint.className = 'free';
+  hint.innerHTML = `→ ${parts.join(` ${dot} `)}`;
+}
 
   areChannelsAvailable(u, s, n){
     const set = this.occupiedChannels.get(u) || new Set();
@@ -407,9 +456,13 @@ this.updateStartAddress();  }
       modeSelect.innerHTML = entry.modes.map(m => `<option value="${m.channels}">${m.name} (${m.channels}ch)</option>`).join('');
       modeGroup.classList.remove('hidden');
       if (preferredChannels) modeSelect.value = preferredChannels;
-      this.cCount.value = modeSelect.value;
-      modeSelect.onchange = () => { this.cCount.value = modeSelect.value; };
-    }
+    this.cCount.value = modeSelect.value;
+    this.updateAddressHint(); // ← AJOUT — mise à jour immédiate au chargement du projo
+
+modeSelect.onchange = () => { 
+  this.cCount.value = modeSelect.value;
+  this.updateAddressHint(); // ← AJOUT — mise à jour à chaque changement de mode
+};    }
   }
 
   onProjectorKeyDown(e) {
