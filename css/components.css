@@ -443,6 +443,13 @@ input.address-conflict {
   background: #ffe0e0;
   border: 2px solid #bb4444;
   color: #7a1a1a;
+  transition: background 1s, border-color 1s;
+}
+
+input.universe-conflict {
+  background: #ffe0e0;
+  border: 2px solid #bb4444;
+  color: #7a1a1a;
 }
 
 #address-hint {
