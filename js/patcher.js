@@ -97,7 +97,11 @@ export class DMXPatcher {
       }
     });
 
-    setupNumberControls('.number-control');
+// Accélération normale pour projectorCount et channelCount
+setupNumberControls('[data-target="projectorCount"], [data-target="channelCount"]');
+
+// Comportement intelligent pour address et universe
+  this.setupSmartControls();
 
     // Branche l'avertissement adresse sur les 4 champs concernés
     ['address', 'universe', 'channelCount', 'projectorCount'].forEach(id => {
@@ -131,6 +135,143 @@ export class DMXPatcher {
 
     this.updateUndoButton();
   }
+
+setupSmartControls() {
+  const fields = [
+    { target: 'address',  inc: this.findNextValidAddress.bind(this),  dec: this.findPrevValidAddress.bind(this)  },
+    { target: 'universe', inc: this.findNextValidUniverse.bind(this), dec: this.findPrevValidUniverse.bind(this) },
+  ];
+
+  fields.forEach(({ target, inc, dec }) => {
+    const input  = document.getElementById(target);
+    const incBtn = document.querySelector(`[data-action="increment"][data-target="${target}"]`);
+    const decBtn = document.querySelector(`[data-action="decrement"][data-target="${target}"]`);
+    if (!input || !incBtn || !decBtn) return;
+
+    let timer = null;
+    let initialTimer = null;
+    let interval = 250;
+
+    const step = (fn) => {
+      const next = fn(parseInt(input.value, 10) || 1);
+      if (next !== null) {
+        input.value = next;
+        // Si on change d'univers depuis le bouton adresse → mettre à jour le champ univers
+        if (target === 'address' && next._u !== undefined) {
+          this.univ.value = next._u;
+          input.value = next._a;
+        }
+        input.dispatchEvent(new Event('input', { bubbles: true }));
+        // Retour visuel
+        const btn = fn === inc ? incBtn : decBtn;
+        btn.style.transform = 'scale(0.85)';
+        setTimeout(() => btn.style.transform = 'scale(1)', 60);
+      }
+    };
+
+    const startEffect = (fn, btn) => (e) => {
+      if (e.type === 'touchstart') e.preventDefault();
+      step(fn);
+      initialTimer = setTimeout(() => {
+        const loop = () => {
+          step(fn);
+          interval = Math.max(70, interval * 0.9);
+          timer = setTimeout(loop, interval);
+        };
+        loop();
+      }, 450);
+    };
+
+    const stopEffect = () => {
+      clearTimeout(timer);
+      clearTimeout(initialTimer);
+      timer = null;
+      initialTimer = null;
+      interval = 250;
+    };
+
+    [incBtn, decBtn].forEach(btn => btn.addEventListener('click', e => e.preventDefault()));
+
+    incBtn.addEventListener('mousedown',  startEffect(inc, incBtn));
+    incBtn.addEventListener('touchstart', startEffect(inc, incBtn), { passive: false });
+    decBtn.addEventListener('mousedown',  startEffect(dec, decBtn));
+    decBtn.addEventListener('touchstart', startEffect(dec, decBtn), { passive: false });
+
+    window.addEventListener('mouseup',    stopEffect);
+    window.addEventListener('touchend',   stopEffect);
+    window.addEventListener('touchcancel',stopEffect);
+  });
+}
+
+findNextValidAddress(current) {
+  const u  = parseInt(this.univ.value, 10) || 1;
+  const cc = parseInt(this.cCount.value, 10) || 1;
+
+  // Cherche dans l'univers courant
+  for (let a = current + 1; a <= 512 - cc + 1; a++) {
+    if (this.areChannelsAvailable(u, a, cc)) return a;
+  }
+
+  // Passe à l'univers suivant
+  for (let nextU = u + 1; nextU <= 512; nextU++) {
+    for (let a = 1; a <= 512 - cc + 1; a++) {
+      if (this.areChannelsAvailable(nextU, a, cc)) {
+        this.univ.value = nextU;
+        return a;
+      }
+    }
+  }
+  return null; // Rien de disponible
+}
+
+findPrevValidAddress(current) {
+  const u  = parseInt(this.univ.value, 10) || 1;
+  const cc = parseInt(this.cCount.value, 10) || 1;
+
+  // Cherche en arrière dans l'univers courant
+  for (let a = current - 1; a >= 1; a--) {
+    if (this.areChannelsAvailable(u, a, cc)) return a;
+  }
+
+  // Passe à l'univers précédent
+  for (let prevU = u - 1; prevU >= 1; prevU--) {
+    for (let a = 512 - cc + 1; a >= 1; a--) {
+      if (this.areChannelsAvailable(prevU, a, cc)) {
+        this.univ.value = prevU;
+        return a;
+      }
+    }
+  }
+  return null;
+}
+
+findNextValidUniverse(current) {
+  const cc = parseInt(this.cCount.value, 10) || 1;
+  for (let u = current + 1; u <= 512; u++) {
+    for (let a = 1; a <= 512 - cc + 1; a++) {
+      if (this.areChannelsAvailable(u, a, cc)) {
+        this.addr.value = a;
+        this.updateAddressHint();
+        return u;
+      }
+    }
+  }
+  return null;
+}
+
+findPrevValidUniverse(current) {
+  const cc = parseInt(this.cCount.value, 10) || 1;
+  for (let u = current - 1; u >= 1; u--) {
+    for (let a = 1; a <= 512 - cc + 1; a++) {
+      if (this.areChannelsAvailable(u, a, cc)) {
+        this.addr.value = a;
+        this.updateAddressHint();
+        return u;
+      }
+    }
+  }
+  return null;
+}
 
   askConfirmation(title, message) {
     return new Promise((resolve) => {
@@ -298,10 +439,9 @@ export class DMXPatcher {
     this.persistData();
     showToast('Patch réalisé !', 2000);
     
-    if(currentA > 512){ currentU++; currentA = 1; }
-    this.univ.value = currentU;
-    this.updateStartAddress();
-  }
+if(currentA > 512){ currentU++; currentA = 1; }
+this.univ.value = currentU;
+this.updateStartAddressAfterPatch();  }
 
   persistData() {
     const state = {
@@ -379,16 +519,43 @@ export class DMXPatcher {
     if (this.undoBtn) this.undoBtn.disabled = this.history.length === 0;
   }
 
-  updateStartAddress() {
-    const u = parseInt(this.univ.value, 10) || 1;
-    const set = this.occupiedChannels.get(u) || new Set();
-    let free = 1;
-    for(let i=1; i<=512; i++) { if(!set.has(i)) { free = i; break; } }
-    if (this.addr) this.addr.value = free;
-    this.updateAddressHint();
+updateStartAddress() {
+  const u = parseInt(this.univ.value, 10) || 1;
+  const set = this.occupiedChannels.get(u) || new Set();
+
+  let free = 1;
+  for (let i = 1; i <= 512; i++) {
+    if (!set.has(i)) { free = i; break; }
   }
 
-  updateAddressHint() {
+  if (this.addr) this.addr.value = free;
+  this.updateAddressHint();
+}
+
+updateStartAddressAfterPatch() {
+  const cc = parseInt(this.cCount.value, 10) || 1;
+  let u = parseInt(this.univ.value, 10) || 1;
+  let free = null;
+
+  while (free === null) {
+    for (let i = 1; i <= 512 - cc + 1; i++) {
+      if (this.areChannelsAvailable(u, i, cc)) {
+        free = { u, a: i };
+        break;
+      }
+    }
+    if (free === null) u++;
+    if (u > 512) break;
+  }
+
+  if (free) {
+    this.univ.value = free.u;
+    if (this.addr) this.addr.value = free.a;
+  }
+  this.updateAddressHint();
+}
+
+updateAddressHint() {
   const hint = document.getElementById('address-hint');
   if (!hint) return;
 
@@ -397,25 +564,64 @@ export class DMXPatcher {
   const cc = parseInt(this.cCount.value, 10) || 1;
   const pc = parseInt(this.pCount.value, 10) || 1;
 
-  const badge = (text) =>
-    `<span style="background:#555;color:#fff;font-size:13px;padding:3px 10px;border-radius:20px;display:inline-block;">${text}</span>`;
+  const badge = (text, color = '#555') =>
+    `<span style="background:${color};color:#fff;font-size:13px;padding:3px 10px;border-radius:20px;display:inline-block;">${text}</span>`;
   const dot = `<span style="color:#888;margin:0 2px;">·</span>`;
 
-  // Seul cas bloquant — conflit immédiat
-  if (!this.areChannelsAvailable(u, a, cc)) {
-    this.addr.className = 'address-conflict';
+  // Reset visuel des deux champs
+  this.univ.className = '';
+  this.addr.className = '';
+  hint.className = '';
+  hint.innerHTML = '';
+
+  const univSet = this.occupiedChannels.get(u) || new Set();
+
+  // CAS 1 — Univers saturé (512/512)
+  if (univSet.size >= 512) {
+    this.univ.className = 'universe-conflict';
     hint.className = 'conflict';
-    hint.innerHTML = `<span style="background:#bb4444;color:#fff;font-size:13px;padding:3px 10px;border-radius:20px;">⚠️ Adresse occupée</span>`;
+    hint.innerHTML = badge(`⚠️ Univers saturé — 512/512 canaux utilisés`, '#bb4444');
     return;
   }
 
-  // Simulation du patch pour compter par univers
+  // CAS 2 — Plus assez de place pour 1 projo dans cet univers
+  let hasRoom = false;
+  for (let i = 1; i <= 512 - cc + 1; i++) {
+    if (this.areChannelsAvailable(u, i, cc)) { hasRoom = true; break; }
+  }
+  if (!hasRoom) {
+    // Calcul des canaux libres restants
+    let freeCount = 0;
+    for (let i = 1; i <= 512; i++) { if (!univSet.has(i)) freeCount++; }
+    this.univ.className = 'universe-conflict';
+    hint.className = 'conflict';
+    hint.innerHTML = badge(`⚠️ Plus assez de place — ${freeCount} canaux libres, ${cc} requis`, '#bb4444');
+    return;
+  }
+
+  // CAS 3 — Débordement fin d'univers
+  if (a + cc - 1 > 512) {
+    const available = 512 - a + 1;
+    this.addr.className = 'address-conflict';
+    hint.className = 'conflict';
+    hint.innerHTML = badge(`⚠️ Dépasse la fin de U${u} — ${available} canal${available > 1 ? 'aux' : ''} disponible${available > 1 ? 's' : ''}, ${cc} requis`, '#bb4444');
+    return;
+  }
+
+  // CAS 4 — Adresse déjà prise
+  if (!this.areChannelsAvailable(u, a, cc)) {
+    this.addr.className = 'address-conflict';
+    hint.className = 'conflict';
+    hint.innerHTML = badge('⚠️ Adresse déjà prise', '#bb4444');
+    return;
+  }
+
+  // CAS 5 — Tout OK — simulation du patch
   let tempU = u, tempA = a;
   const univCounts = {};
 
   for (let i = 0; i < pc; i++) {
     if (tempA + cc - 1 > 512) { tempU++; tempA = 1; }
-    // Si conflit différé — on saute à la prochaine adresse libre
     while (!this.areChannelsAvailable(tempU, tempA, cc)) {
       tempA++;
       if (tempA > 512 - cc + 1) { tempU++; tempA = 1; }
@@ -424,19 +630,18 @@ export class DMXPatcher {
     tempA += cc;
   }
 
-  // Affichage — toujours positif
   const univKeys = Object.keys(univCounts).map(Number);
-  const parts = univKeys.map(uKey => {
-    const count = univCounts[uKey];
-    return `${count}× ${badge('U' + uKey)}`;
-  });
+  const parts = univKeys.map(uKey =>
+    `${univCounts[uKey]}× ${badge('U' + uKey)}`
+  );
 
   this.addr.className = 'address-free';
+  this.univ.className = '';
   hint.className = 'free';
   hint.innerHTML = `→ ${parts.join(` ${dot} `)}`;
 }
 
-  areChannelsAvailable(u, s, n){
+areChannelsAvailable(u, s, n){
     const set = this.occupiedChannels.get(u) || new Set();
     for(let i=0; i<n; i++) if(set.has(s+i)) return false;
     return true;
@@ -488,4 +693,6 @@ modeSelect.onchange = () => {
   }
 }
 
-window.addEventListener('load', () => new DMXPatcher());
+window.addEventListener('load', () => {
+  window._dmxPatcher = new DMXPatcher();
+});
