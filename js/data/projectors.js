@@ -1219,6 +1219,14 @@ export const projectorLibrary = [
   ],
 },
 
+{
+  model: "P18 MKII Profile",
+  brand: "JB Lighting",
+  modes: [
+    { name: "M1", channels: 42 },
+    { name: "M2", channels: 62 },
+  ],
+},
   // —————————————————————————————————————————————————————
   // Clay Paky
   // —————————————————————————————————————————————————————
