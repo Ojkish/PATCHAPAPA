@@ -983,6 +983,14 @@ export const projectorLibrary = [
       { name: "8-ch", channels: 8 },
     ],
   },
+  {
+  model: "SolaFrame 3000",
+  brand: "ETC",
+  modes: [
+    { name: "Standard", channels: 49 },
+    { name: "Enhanced", channels: 51 },
+  ],
+},
 
   // —————————————————————————————————————————————————————
   // SGM
