@@ -916,15 +916,42 @@ export const projectorLibrary = [
   // —————————————————————————————————————————————————————
   // ETC (Electronic Theatre Controls)
   // —————————————————————————————————————————————————————
-  {
-    model: "Source Four LED Series 2 Lustr+",
-    brand: "ETC",
-    modes: [
-      { name: "6-ch", channels: 6 },
-      { name: "16-ch", channels: 16 },
-    ],
-  },
-  {
+{
+  model: "Source Four LED Series 2 Lustr+",
+  brand: "ETC",
+  modes: [
+    { name: "Direct", channels: 10 },
+    { name: "RGB", channels: 6 },
+    { name: "HSI", channels: 6 },
+    { name: "HSIC", channels: 7 },
+    { name: "Studio", channels: 6 },
+    { name: "Direct + Plus Seven", channels: 18 },
+    { name: "RGB + Plus Seven", channels: 14 },
+    { name: "HSI + Plus Seven", channels: 14 },
+    { name: "HSIC + Plus Seven", channels: 15 },
+    { name: "Studio + Plus Seven", channels: 14 },
+  ],
+},
+
+{
+  model: "Source Four LED Series 2 Daylight",
+  brand: "ETC",
+  modes: [
+    { name: "Studio", channels: 3 },
+    { name: "Direct", channels: 3 },
+  ],
+},
+
+{
+  model: "Source Four LED Series 2 Tungsten",
+  brand: "ETC",
+  modes: [
+    { name: "Studio", channels: 3 },
+    { name: "Direct", channels: 3 },
+  ],
+},
+
+{
     model: "Source Four LED Series 2 CYC",
     brand: "ETC",
     modes: [
