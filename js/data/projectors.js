@@ -312,6 +312,17 @@ export const projectorLibrary = [
     ],
   },
   {
+  model: "iEsprite FS",
+  brand: "Robe",
+  modes: [
+    { name: "Mode 1", channels: 49 },
+    { name: "Mode 2", channels: 42 },
+    { name: "Mode 3", channels: 50 },
+    { name: "Mode 4", channels: 43 },
+    { name: "Mode 5", channels: 51 },
+  ],
+},
+  {
     model: "Tetra 2",
     brand: "Robe",
     modes: [
