@@ -1518,8 +1518,24 @@ export const projectorLibrary = [
     modes: [
       { name: "Standard", channels: 30 }
     ]
-}
+},
+  // —————————————————————————————————————————————————————
+  // LDDE
+  // —————————————————————————————————————————————————————
+    {
+    model: "NanoPixSlim FR1440",
+    brand: "LDDE",
+    modes: [
+      { name: "CH5", channels: 5 },
+      { name: "CH6", channels: 6 },
+      { name: "CH7", channels: 7 },
+      { name: "CH10", channels: 10 },
+      { name: "CH11", channels: 11 },
+]
+},
+
 ];
+  
 
 /**
  * Initialise le <datalist> pour l'auto-complétion du nom de projecteur.
