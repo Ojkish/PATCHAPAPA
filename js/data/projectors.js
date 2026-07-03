@@ -1519,6 +1519,26 @@ export const projectorLibrary = [
       { name: "Standard", channels: 30 }
     ]
 },
+
+  // —————————————————————————————————————————————————————
+  // Prolights
+  // —————————————————————————————————————————————————————
+
+  {
+  model: "PAR IPMFC",
+  brand: "Prolights",
+  modes: [
+    { name: "UNO", channels: 1 },
+    { name: "DUO", channels: 2 },
+    { name: "Basic", channels: 5 },
+    { name: "Basic 16-bit", channels: 10 },
+    { name: "Standard", channels: 9 },
+    { name: "Extended", channels: 12 },
+    { name: "Advanced", channels: 18 },
+  ],
+},
+
+
   // —————————————————————————————————————————————————————
   // LDDE
   // —————————————————————————————————————————————————————
@@ -1535,7 +1555,7 @@ export const projectorLibrary = [
 },
 
 ];
-  
+
 
 /**
  * Initialise le <datalist> pour l'auto-complétion du nom de projecteur.
